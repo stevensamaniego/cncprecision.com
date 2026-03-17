@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — CNC Precision Machines International</title>
+  <meta name="description" content="Contact CNC Precision Machines International in El Paso, TX. Call (915) 778-0108 or email sales@cncprecision.com for machine tool sales, service, and support.">
+  <link rel="icon" type="image/png" href="assets/logos/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="header__logo">
+        <img src="assets/logos/cnc-logo.png" alt="CNC Precision Machines International">
+      </a>
+      <nav class="header__nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="products.html">Products</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <span class="header__cta">
+          <a href="contact.html" class="btn btn--primary">Get a Quote</a>
+        </span>
+      </nav>
+      <button class="header__toggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p>Get in touch for machine tool sales, service, parts, or technical support.</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid fade-in">
+
+        <!-- Form -->
+        <div class="contact-form">
+          <h3 style="margin-bottom: 0.5rem;">Send Us a Message</h3>
+          <p style="color: var(--color-gray-600); margin-bottom: 1.5rem; font-size: 0.95rem;">Fill out the form below and we'll get back to you promptly.</p>
+          <form action="https://formspree.io/f/sales@cncprecision.com" method="POST">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required placeholder="Your name">
+              </div>
+              <div class="form-group">
+                <label for="company">Company</label>
+                <input type="text" id="company" name="company" placeholder="Company name">
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="your@email.com">
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="interest">I'm interested in...</label>
+              <select id="interest" name="interest">
+                <option value="">Select a topic</option>
+                <option value="new-machine">New Machine Purchase</option>
+                <option value="service">Service &amp; Maintenance</option>
+                <option value="parts">Parts &amp; Consumables</option>
+                <option value="quote">Request a Quote</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" required placeholder="Tell us about your needs..."></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary" style="width: 100%;">Send Message</button>
+          </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div>
+          <div class="contact-info-cards">
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              </div>
+              <div>
+                <h4>Phone</h4>
+                <p><a href="tel:+19157780108">(915) 778-0108</a></p>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+              </div>
+              <div>
+                <h4>Fax</h4>
+                <p>(915) 778-0102</p>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <h4>Email</h4>
+                <p><a href="mailto:sales@cncprecision.com">sales@cncprecision.com</a></p>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <h4>Mailing Address</h4>
+                <p>P.O. Box 971938<br>El Paso, TX 79997</p>
+              </div>
+            </div>
+            <div class="contact-info-card">
+              <div class="contact-info-card__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              </div>
+              <div>
+                <h4>Coverage Area</h4>
+                <p>El Paso, TX &bull; New Mexico &bull; Cd. Juarez, Chihuahua &bull; Northern Mexico</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map -->
+          <div class="contact-map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d217807.41627767!2d-106.58693!3d31.7619!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86e73f8bc5fe3b69%3A0xe39184e3ab9d0222!2sEl%20Paso%2C%20TX!5e0!3m2!1sen!2sus!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="CNC Precision Machines location — El Paso, TX"></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section--navy cta">
+    <div class="container fade-in">
+      <h2>Prefer to Call?</h2>
+      <p>Our team is available to discuss your machine tool needs by phone.</p>
+      <a href="tel:+19157780108" class="btn btn--primary" style="font-size: 1.2rem; padding: 1rem 2.5rem;">(915) 778-0108</a>
+      <div class="cta-phone" style="margin-top: 1rem;">Email: <a href="mailto:sales@cncprecision.com">sales@cncprecision.com</a></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="assets/logos/cnc-logo-2.png" alt="CNC Precision Machines International">
+          <p>Full-service distributor of new industrial machine tools serving El Paso, TX, New Mexico, and Northern Mexico since 1998.</p>
+        </div>
+        <div class="footer__links">
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="products.html">Products</a>
+          <a href="services.html">Services</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer__links">
+          <h4>Products</h4>
+          <a href="products.html">EDM Machines</a>
+          <a href="products.html">Grinding</a>
+          <a href="products.html">Machining Centers</a>
+          <a href="products.html">Lathes &amp; Mills</a>
+          <a href="products.html">Waterjet Cutting</a>
+        </div>
+        <div class="footer__contact">
+          <h4>Contact</h4>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <a href="tel:+19157780108">(915) 778-0108</a>
+          </p>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:sales@cncprecision.com">sales@cncprecision.com</a>
+          </p>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            El Paso, TX 79997
+          </p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 CNC Precision Machines International, LLC. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
