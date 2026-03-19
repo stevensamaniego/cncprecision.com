@@ -1,68 +1,67 @@
 /* ============================================
-   CNC Precision Machines International, LLC
+   CNC Precision Machines International
    Main JavaScript
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
+  'use strict';
 
-  // --- Mobile menu toggle ---
+  // --- Mobile Navigation ---
   const toggle = document.querySelector('.header__toggle');
   const nav = document.querySelector('.header__nav');
 
   if (toggle && nav) {
-    toggle.addEventListener('click', () => {
+    toggle.addEventListener('click', function() {
       toggle.classList.toggle('active');
       nav.classList.toggle('open');
+      document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
     });
 
-    // Close menu when clicking a nav link
-    nav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
+    // Close on nav link click
+    nav.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
         toggle.classList.remove('active');
         nav.classList.remove('open');
+        document.body.style.overflow = '';
       });
     });
   }
 
-  // --- Sticky header shadow on scroll ---
-  const header = document.querySelector('.header');
+  // --- Scroll-triggered Animations ---
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, index) {
+      if (entry.isIntersecting) {
+        // Stagger children if parent is a grid
+        var parent = entry.target.parentElement;
+        if (parent) {
+          var siblings = Array.from(parent.querySelectorAll('.fade-in'));
+          var idx = siblings.indexOf(entry.target);
+          var delay = idx >= 0 ? idx * 100 : 0;
+          entry.target.style.transitionDelay = delay + 'ms';
+        }
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  document.querySelectorAll('.fade-in').forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // --- Header scroll effect ---
+  var header = document.querySelector('.header');
   if (header) {
-    window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 10);
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 50) {
+        header.style.background = 'rgba(10, 22, 40, 0.98)';
+      } else {
+        header.style.background = 'rgba(10, 22, 40, 0.92)';
+      }
     }, { passive: true });
   }
 
-  // --- Scroll-in animations with stagger ---
-  const fadeEls = document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right');
-  if (fadeEls.length > 0) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Stagger siblings: machine cards, industry cards, etc.
-          const parent = entry.target.parentElement;
-          const siblings = parent ? parent.querySelectorAll(':scope > .fade-in, :scope > .fade-in-left, :scope > .fade-in-right') : [];
-
-          if (siblings.length > 1) {
-            const index = Array.from(siblings).indexOf(entry.target);
-            entry.target.style.transitionDelay = (index * 0.1) + 's';
-          }
-
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
-
-    fadeEls.forEach(el => observer.observe(el));
-  }
-
-  // --- Active nav link ---
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.header__nav a').forEach(link => {
-    const href = link.getAttribute('href');
-    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-      link.classList.add('active');
-    }
-  });
-
-});
+})();

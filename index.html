@@ -9,20 +9,10 @@
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-  <!-- Splash Overlay -->
-  <div id="splash-overlay" class="splash-overlay">
-    <canvas id="splash-canvas"></canvas>
-    <div id="splash-logo" class="splash-logo">
-      <img src="assets/logos/cnc-logo.png" alt="CNC Precision">
-    </div>
-    <div id="splash-text" class="splash-text">CNC Precision Machines International</div>
-  </div>
-  <script src="js/splash.js"></script>
 
   <!-- Header -->
   <header class="header">
@@ -50,106 +40,104 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero__bg-overlay"></div>
+    <div class="hero__particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
     <div class="container">
-      <div class="hero__content">
-        <div class="hero__badge">Est. 2000 &bull; El Paso, TX</div>
-        <h1>35+ Years Powering <span>Precision Manufacturing</span> on the Border</h1>
-        <p>CNC Precision Machines International is your full-service partner for industrial machine tools in El Paso, TX, New Mexico, and Northern Mexico. From sales to service, we keep your production running.</p>
-        <div class="hero__buttons">
-          <a href="products.html" class="btn btn--primary btn--lg">View Our Products</a>
-          <a href="contact.html" class="btn btn--outline btn--lg">Contact Us</a>
-        </div>
-      </div>
-      <div class="hero__logo-showcase">
-        <div class="hero__logo-glow"></div>
-        <img src="assets/logos/cnc-logo-3d.png" alt="CNC Precision Machines International 3D Logo">
+      <img src="assets/logos/cnc-logo-3d.svg" alt="CNC Precision Machines International" class="hero__logo">
+      <p class="hero__tagline">Full-Service Industrial Machine Tool Solutions</p>
+      <div class="hero__buttons">
+        <a href="#machines" class="btn btn--metallic btn--lg">View Our Machines</a>
+        <a href="contact.html" class="btn btn--outline btn--lg">Contact Us</a>
       </div>
     </div>
   </section>
 
-  <!-- Machine Fleet -->
-  <section class="section section--dark machines-section">
+  <!-- Machine Showcase -->
+  <section id="machines" class="section section--dark">
     <div class="container">
       <div class="section-header fade-in">
-        <div class="section-label">Our Equipment</div>
-        <h2>World-Class Machine Tool Fleet</h2>
+        <h2>Our Machines</h2>
         <div class="accent-line"></div>
-        <p>We represent the finest industrial machine tools from industry-leading manufacturers. Explore our lineup.</p>
+        <p>Premium industrial machine tools from the world's most trusted manufacturers.</p>
       </div>
       <div class="machines-grid">
+
         <a href="https://www.sodick.com/" target="_blank" rel="noopener" class="machine-card fade-in">
           <div class="machine-card__image">
-            <img src="assets/images/Sodick-ALN400g-4.jpg" alt="Sodick ALN400g Wire EDM">
+            <img src="assets/images/Sodick-ALN400g-4.jpg" alt="Sodick ALN400G Wire EDM" loading="lazy">
             <div class="machine-card__overlay">
-              <span class="machine-card__cta">Visit Sodick &rarr;</span>
+              <h3 class="machine-card__name">Sodick ALN400G</h3>
+              <span class="machine-card__brand">Wire EDM — by Sodick</span>
+              <span class="machine-card__learn">Learn More &rarr;</span>
             </div>
           </div>
-          <div class="machine-card__body">
-            <h3>Sodick Wire EDM</h3>
-            <p>Ultra-precision wire EDM machines for complex die and mold work with sub-micron accuracy.</p>
-          </div>
         </a>
+
         <a href="https://www.southwesternindustries.com/" target="_blank" rel="noopener" class="machine-card fade-in">
           <div class="machine-card__image">
-            <img src="assets/images/Trak-Knee-Mill-K3-4.jpg" alt="ProtoTRAK Knee Mill K3">
+            <img src="assets/images/Trak-Knee-Mill-K3-4.jpg" alt="ProtoTRAK K3 CNC Knee Mill" loading="lazy">
             <div class="machine-card__overlay">
-              <span class="machine-card__cta">Visit ProtoTRAK &rarr;</span>
+              <h3 class="machine-card__name">ProtoTRAK K3</h3>
+              <span class="machine-card__brand">CNC Knee Mill — by Southwestern Industries</span>
+              <span class="machine-card__learn">Learn More &rarr;</span>
             </div>
           </div>
-          <div class="machine-card__body">
-            <h3>ProtoTRAK Mills</h3>
-            <p>Versatile CNC knee mills with intuitive ProtoTRAK controls for job shops and prototyping.</p>
-          </div>
         </a>
+
         <a href="https://www.chevalierusa.com/" target="_blank" rel="noopener" class="machine-card fade-in">
           <div class="machine-card__image">
-            <img src="assets/images/CHEVALIER-FSG-3A818-GRINDER-4.jpg" alt="Chevalier FSG-3A818 Surface Grinder">
+            <img src="assets/images/CHEVALIER-FSG-3A818-GRINDER-4.jpg" alt="Chevalier FSG-3A818 Surface Grinder" loading="lazy">
             <div class="machine-card__overlay">
-              <span class="machine-card__cta">Visit Chevalier &rarr;</span>
+              <h3 class="machine-card__name">Chevalier FSG-3A818</h3>
+              <span class="machine-card__brand">Surface Grinder — by Chevalier</span>
+              <span class="machine-card__learn">Learn More &rarr;</span>
             </div>
           </div>
-          <div class="machine-card__body">
-            <h3>Chevalier Grinder</h3>
-            <p>High-precision surface grinders for finishing operations requiring mirror-like tolerances.</p>
-          </div>
         </a>
+
         <a href="https://laserstar.net/" target="_blank" rel="noopener" class="machine-card fade-in">
           <div class="machine-card__image">
-            <img src="assets/images/LaserStar-7700-Welding-4.jpg" alt="LaserStar 7700 Laser Welder">
+            <img src="assets/images/LaserStar-7700-Welding-4.jpg" alt="LaserStar 7700 Laser Welder" loading="lazy">
             <div class="machine-card__overlay">
-              <span class="machine-card__cta">Visit LaserStar &rarr;</span>
+              <h3 class="machine-card__name">LaserStar 7700</h3>
+              <span class="machine-card__brand">Laser Welder — by LaserStar</span>
+              <span class="machine-card__learn">Learn More &rarr;</span>
             </div>
           </div>
-          <div class="machine-card__body">
-            <h3>LaserStar Welder</h3>
-            <p>Advanced laser welding systems for precision repair, joining, and micro-welding applications.</p>
-          </div>
         </a>
+
         <a href="https://www.sharp-industries.com/" target="_blank" rel="noopener" class="machine-card fade-in">
           <div class="machine-card__image">
-            <img src="assets/images/Sharp-Machining-Ctr-Model-SVL-4.jpg" alt="Sharp SVL Machining Center">
+            <img src="assets/images/Sharp-Machining-Ctr-Model-SVL-4.jpg" alt="Sharp SVL Vertical Machining Center" loading="lazy">
             <div class="machine-card__overlay">
-              <span class="machine-card__cta">Visit Sharp &rarr;</span>
+              <h3 class="machine-card__name">Sharp SVL</h3>
+              <span class="machine-card__brand">Vertical Machining Center — by Sharp</span>
+              <span class="machine-card__learn">Learn More &rarr;</span>
             </div>
           </div>
-          <div class="machine-card__body">
-            <h3>Sharp Machining Center</h3>
-            <p>Vertical machining centers delivering heavy-duty cutting performance for production runs.</p>
-          </div>
         </a>
+
         <a href="https://www.southwesternindustries.com/" target="_blank" rel="noopener" class="machine-card fade-in">
           <div class="machine-card__image">
-            <img src="assets/images/TRAK-TRL-1636-4.jpg" alt="TRAK TRL 1636 Lathe">
+            <img src="assets/images/TRAK-TRL-1636-4.jpg" alt="TRAK TRL 1636 CNC Lathe" loading="lazy">
             <div class="machine-card__overlay">
-              <span class="machine-card__cta">Visit TRAK &rarr;</span>
+              <h3 class="machine-card__name">TRAK TRL 1636</h3>
+              <span class="machine-card__brand">CNC Lathe — by TRAK/SWI</span>
+              <span class="machine-card__learn">Learn More &rarr;</span>
             </div>
           </div>
-          <div class="machine-card__body">
-            <h3>TRAK Lathe</h3>
-            <p>CNC and manual lathes with ProtoTRAK controls, perfect for turning operations of all sizes.</p>
-          </div>
         </a>
+
       </div>
       <div class="machines-cta fade-in">
         <a href="products.html" class="btn btn--primary btn--lg">View All Products &amp; Brands</a>
@@ -161,37 +149,28 @@
   <section class="section section--gray">
     <div class="container">
       <div class="section-header fade-in">
-        <div class="section-label">Sectors</div>
         <h2>Industries We Serve</h2>
         <div class="accent-line"></div>
         <p>Delivering precision machinery solutions across the most demanding manufacturing sectors.</p>
       </div>
       <div class="industries-grid">
         <div class="industry-card fade-in">
-          <div class="industry-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
+          <div class="industry-card__icon">&#9881;</div>
           <h3>Automotive</h3>
           <p>High-volume production tooling for automotive parts and components manufacturing.</p>
         </div>
         <div class="industry-card fade-in">
-          <div class="industry-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
-          </div>
+          <div class="industry-card__icon">&#9992;</div>
           <h3>Aerospace</h3>
           <p>Tight-tolerance machining solutions for aerospace and defense applications.</p>
         </div>
         <div class="industry-card fade-in">
-          <div class="industry-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          </div>
+          <div class="industry-card__icon">&#9764;</div>
           <h3>Medical</h3>
           <p>Precision equipment for medical device and implant manufacturing.</p>
         </div>
         <div class="industry-card fade-in">
-          <div class="industry-card__icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
-          </div>
+          <div class="industry-card__icon">&#9638;</div>
           <h3>Mold &amp; Die</h3>
           <p>EDM, grinding, and machining solutions for mold and die production.</p>
         </div>
@@ -199,34 +178,10 @@
     </div>
   </section>
 
-  <!-- What We Do -->
-  <section class="section section--textured">
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-label">About Us</div>
-        <h2>Your Machine Tool Partner</h2>
-        <div class="accent-line"></div>
-        <p>We provide complete solutions — from selecting the right machine to keeping it running for years to come.</p>
-      </div>
-      <div class="about-grid fade-in">
-        <div>
-          <img src="assets/images/Sodick-ALN400g-4.jpg" alt="Sodick ALN400g Wire EDM Machine">
-        </div>
-        <div class="about-content">
-          <h2>Full-Service Machine Tool Distributor</h2>
-          <p>Since 2000, CNC Precision Machines International has been the trusted source for new industrial machine tools along the US-Mexico border. Our team brings over 35 years of experience in the maquiladora industry.</p>
-          <p>We don't just sell machines — we provide sales consultation, technical service, maintenance, installation support, and emergency response. Our strategic location in El Paso, with an office in Cd. Juarez, means we're always close when you need us.</p>
-          <a href="about.html" class="btn btn--outline-dark">Learn More About Us</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Partners -->
-  <section class="section section--gray">
+  <section class="section">
     <div class="container">
       <div class="section-header fade-in">
-        <div class="section-label">Partners</div>
         <h2>Authorized Brands</h2>
         <div class="accent-line"></div>
         <p>We represent the industry's leading machine tool manufacturers.</p>
@@ -234,6 +189,7 @@
       <div class="partners-grid fade-in">
         <div class="partner-logo"><a href="https://www.sodick.com/" target="_blank" rel="noopener"><img src="assets/logos/sodick.png" alt="Sodick"></a></div>
         <div class="partner-logo"><a href="https://www.sharp-industries.com/" target="_blank" rel="noopener"><img src="assets/logos/sharp.png" alt="Sharp"></a></div>
+        <div class="partner-logo"><a href="https://www.chevalierusa.com/" target="_blank" rel="noopener"><img src="assets/logos/chevalier.png" alt="Chevalier" onerror="this.style.display='none'"></a></div>
         <div class="partner-logo"><a href="https://www.fanucrobotics.com/" target="_blank" rel="noopener"><img src="assets/logos/fanuc-robotics.png" alt="Fanuc Robotics"></a></div>
         <div class="partner-logo"><a href="https://www.omax.com/" target="_blank" rel="noopener"><img src="assets/logos/OMAX.png" alt="OMAX"></a></div>
         <div class="partner-logo"><a href="https://www.southwesternindustries.com/" target="_blank" rel="noopener"><img src="assets/logos/ProtoTRAK.png" alt="ProtoTRAK"></a></div>
@@ -246,17 +202,16 @@
         <div class="partner-logo"><a href="https://www.mitsuihightec.com/" target="_blank" rel="noopener"><img src="assets/logos/mitsui.png" alt="Mitsui"></a></div>
         <div class="partner-logo"><a href="https://www.gromax-usa.com/" target="_blank" rel="noopener"><img src="assets/logos/gromax.png" alt="Gromax"></a></div>
         <div class="partner-logo"><a href="https://bluewaveinc.com/" target="_blank" rel="noopener"><img src="assets/logos/blueWave.png" alt="BlueWave"></a></div>
-        <div class="partner-logo"><a href="https://www.micronfilter.it/" target="_blank" rel="noopener"><img src="assets/logos/MicronFilter.png" alt="Micron Filter"></a></div>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="section section--cta cta">
+  <section class="cta-section">
     <div class="container fade-in">
-      <h2>Ready to Find the Right Machine?</h2>
-      <p>Let our experienced team help you find the best solution in quality and price for your production needs.</p>
-      <a href="contact.html" class="btn btn--primary btn--lg">Request a Consultation</a>
+      <h2>Ready to Upgrade Your Production?</h2>
+      <p>Let our experienced team help you find the best machine tool solution for your operation.</p>
+      <a href="contact.html" class="btn btn--primary btn--lg">Get a Quote</a>
       <div class="cta-phone">Or call us directly: <a href="tel:+19157780108">(915) 778-0108</a></div>
     </div>
   </section>
@@ -266,7 +221,7 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <img src="assets/logos/cnc-logo-2.png" alt="CNC Precision Machines International">
+          <img src="assets/logos/cnc-logo.png" alt="CNC Precision Machines International">
           <p>Full-service distributor of new industrial machine tools serving El Paso, TX, New Mexico, and Northern Mexico since 2000.</p>
         </div>
         <div class="footer__links">
@@ -301,7 +256,7 @@
         </div>
       </div>
       <div class="footer__bottom">
-        <p>&copy; 2026 CNC Precision Machines International, LLC. All rights reserved.</p>
+        <p>&copy; 2026 CNC Precision Machines Intl. LLC. All rights reserved.</p>
       </div>
     </div>
   </footer>
