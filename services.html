@@ -8,13 +8,13 @@
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- Header -->
-  <header class="header">
+  <header class="header scrolled">
     <div class="container">
       <a href="index.html" class="header__logo">
         <img src="assets/logos/cnc-logo.png" alt="CNC Precision Machines International">
@@ -23,7 +23,7 @@
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="products.html">Products</a>
-        <a href="services.html">Services</a>
+        <a href="services.html" class="active">Services</a>
         <a href="contact.html">Contact</a>
         <span class="header__cta">
           <a href="contact.html" class="btn btn--primary">Get a Quote</a>
@@ -36,6 +36,17 @@
       </button>
     </div>
   </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-overlay"></div>
+  <nav class="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="products.html">Products</a>
+    <a href="services.html">Services</a>
+    <a href="contact.html">Contact</a>
+    <a href="contact.html" class="btn btn--primary" style="text-align:center; margin-top: 16px;">Get a Quote</a>
+  </nav>
 
   <!-- Page Hero -->
   <section class="page-hero">
@@ -55,7 +66,7 @@
       </div>
       <div class="services-grid">
 
-        <div class="service-card fade-in">
+        <div class="service-card">
           <div class="service-card__icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           </div>
@@ -69,7 +80,7 @@
           </ul>
         </div>
 
-        <div class="service-card fade-in">
+        <div class="service-card">
           <div class="service-card__icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
           </div>
@@ -83,7 +94,7 @@
           </ul>
         </div>
 
-        <div class="service-card fade-in">
+        <div class="service-card">
           <div class="service-card__icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           </div>
@@ -97,7 +108,7 @@
           </ul>
         </div>
 
-        <div class="service-card fade-in">
+        <div class="service-card">
           <div class="service-card__icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           </div>
@@ -111,7 +122,7 @@
           </ul>
         </div>
 
-        <div class="service-card fade-in">
+        <div class="service-card">
           <div class="service-card__icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
@@ -125,7 +136,7 @@
           </ul>
         </div>
 
-        <div class="service-card fade-in">
+        <div class="service-card">
           <div class="service-card__icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
           </div>
@@ -154,7 +165,7 @@
           <p>This proximity means less downtime for you. When a machine goes down, we don't have to fly in from across the country — we drive over.</p>
         </div>
         <div>
-          <img src="assets/images/LaserStar-7700-Welding-4.jpg" alt="LaserStar 7700 Welding System">
+          <img src="assets/images/LaserStar-7700-Welding-4.jpg" alt="LaserStar 7700 Welding System" loading="lazy">
         </div>
       </div>
     </div>
@@ -165,7 +176,7 @@
     <div class="container fade-in">
       <h2>Need Service or Support?</h2>
       <p>Our team is ready to help with sales, service, parts, or any machine tool question.</p>
-      <a href="contact.html" class="btn btn--primary btn--lg">Contact Us Today</a>
+      <a href="contact.html" class="btn btn--outline btn--lg">Contact Us Today</a>
       <div class="cta-phone">Emergency service: <a href="tel:+19157780108">(915) 778-0108</a></div>
     </div>
   </section>
@@ -211,10 +222,13 @@
       </div>
       <div class="footer__bottom">
         <p>&copy; 2026 CNC Precision Machines Intl. LLC. All rights reserved.</p>
+        <a href="#">Designed by The Noble Engineer</a>
       </div>
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

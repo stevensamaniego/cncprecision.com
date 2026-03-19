@@ -1,67 +1,282 @@
 /* ============================================
-   CNC Precision Machines International
-   Main JavaScript
+   CNC PRECISION MACHINES — MAIN JS
+   GSAP + ScrollTrigger + Swiper
    ============================================ */
 
-(function() {
-  'use strict';
+document.addEventListener('DOMContentLoaded', () => {
 
-  // --- Mobile Navigation ---
+  // --- PRELOADER ---
+  const preloader = document.querySelector('.preloader');
+  if (preloader) {
+    setTimeout(() => {
+      preloader.classList.add('dismiss');
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 1000);
+    }, 2000);
+  }
+
+  // --- HEADER SCROLL ---
+  const header = document.querySelector('.header');
+  const onScroll = () => {
+    if (window.scrollY > 80) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // --- MOBILE NAV ---
   const toggle = document.querySelector('.header__toggle');
-  const nav = document.querySelector('.header__nav');
+  const mobileNav = document.querySelector('.mobile-nav');
+  const mobileOverlay = document.querySelector('.mobile-overlay');
 
-  if (toggle && nav) {
-    toggle.addEventListener('click', function() {
+  if (toggle && mobileNav) {
+    toggle.addEventListener('click', () => {
       toggle.classList.toggle('active');
-      nav.classList.toggle('open');
-      document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+      mobileNav.classList.toggle('open');
+      if (mobileOverlay) mobileOverlay.classList.toggle('open');
     });
 
-    // Close on nav link click
-    nav.querySelectorAll('a').forEach(function(link) {
-      link.addEventListener('click', function() {
+    if (mobileOverlay) {
+      mobileOverlay.addEventListener('click', () => {
         toggle.classList.remove('active');
-        nav.classList.remove('open');
-        document.body.style.overflow = '';
+        mobileNav.classList.remove('open');
+        mobileOverlay.classList.remove('open');
+      });
+    }
+
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        toggle.classList.remove('active');
+        mobileNav.classList.remove('open');
+        if (mobileOverlay) mobileOverlay.classList.remove('open');
       });
     });
   }
 
-  // --- Scroll-triggered Animations ---
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry, index) {
-      if (entry.isIntersecting) {
-        // Stagger children if parent is a grid
-        var parent = entry.target.parentElement;
-        if (parent) {
-          var siblings = Array.from(parent.querySelectorAll('.fade-in'));
-          var idx = siblings.indexOf(entry.target);
-          var delay = idx >= 0 ? idx * 100 : 0;
-          entry.target.style.transitionDelay = delay + 'ms';
-        }
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
+  // --- HERO SWIPER ---
+  const heroEl = document.querySelector('.hero-swiper');
+  if (heroEl) {
+    new Swiper('.hero-swiper', {
+      direction: 'vertical',
+      loop: true,
+      speed: 1000,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.hero .swiper-pagination',
+        clickable: true,
+      },
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true,
+      },
     });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -40px 0px'
-  });
-
-  document.querySelectorAll('.fade-in').forEach(function(el) {
-    observer.observe(el);
-  });
-
-  // --- Header scroll effect ---
-  var header = document.querySelector('.header');
-  if (header) {
-    window.addEventListener('scroll', function() {
-      if (window.scrollY > 50) {
-        header.style.background = 'rgba(10, 22, 40, 0.98)';
-      } else {
-        header.style.background = 'rgba(10, 22, 40, 0.92)';
-      }
-    }, { passive: true });
   }
 
-})();
+  // --- PARTNERS SWIPER ---
+  const partnersEl = document.querySelector('.partners-swiper');
+  if (partnersEl) {
+    new Swiper('.partners-swiper', {
+      loop: true,
+      slidesPerView: 'auto',
+      spaceBetween: 0,
+      speed: 4000,
+      autoplay: {
+        delay: 0,
+        disableOnInteraction: false,
+      },
+      allowTouchMove: false,
+      freeMode: true,
+    });
+  }
+
+  // --- GSAP + SCROLLTRIGGER ---
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Section headers
+    gsap.utils.toArray('.section-header').forEach(el => {
+      gsap.from(el, {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          once: true,
+        },
+      });
+    });
+
+    // Machine cards stagger
+    const machineCards = gsap.utils.toArray('.machine-card');
+    if (machineCards.length) {
+      gsap.from(machineCards, {
+        y: 60,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.12,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.machines-grid',
+          start: 'top 80%',
+          once: true,
+        },
+      });
+    }
+
+    // Industry cards stagger
+    const industryCards = gsap.utils.toArray('.industry-card');
+    if (industryCards.length) {
+      gsap.from(industryCards, {
+        y: 50,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.industries-grid',
+          start: 'top 80%',
+          once: true,
+        },
+      });
+    }
+
+    // About preview
+    const aboutText = document.querySelector('.about-preview__text');
+    const aboutVisual = document.querySelector('.about-preview__visual');
+    if (aboutText) {
+      gsap.from(aboutText, {
+        x: -50,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: aboutText, start: 'top 80%', once: true },
+      });
+    }
+    if (aboutVisual) {
+      gsap.from(aboutVisual, {
+        x: 50,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: aboutVisual, start: 'top 80%', once: true },
+      });
+    }
+
+    // CTA section
+    const ctaSection = document.querySelector('.cta');
+    if (ctaSection) {
+      gsap.from(ctaSection.children, {
+        y: 30,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: ctaSection, start: 'top 80%', once: true },
+      });
+    }
+
+    // Subpage animations
+    gsap.utils.toArray('.fade-in').forEach(el => {
+      gsap.from(el, {
+        y: 40,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          once: true,
+        },
+      });
+    });
+
+    // Service cards
+    const serviceCards = gsap.utils.toArray('.service-card');
+    if (serviceCards.length) {
+      gsap.from(serviceCards, {
+        y: 50,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.services-grid',
+          start: 'top 80%',
+          once: true,
+        },
+      });
+    }
+
+    // Product cards
+    const productCards = gsap.utils.toArray('.product-card');
+    if (productCards.length) {
+      gsap.from(productCards, {
+        y: 50,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.products-grid',
+          start: 'top 80%',
+          once: true,
+        },
+      });
+    }
+
+    // Stat numbers counter animation
+    gsap.utils.toArray('.stat-item__number').forEach(el => {
+      const val = el.textContent;
+      const num = parseInt(val);
+      if (!isNaN(num)) {
+        const suffix = val.replace(String(num), '');
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: num,
+          duration: 1.5,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          onUpdate: () => {
+            el.textContent = Math.round(obj.val) + suffix;
+          },
+        });
+      }
+    });
+
+    // Contact cards
+    const contactCards = gsap.utils.toArray('.contact-info-card');
+    if (contactCards.length) {
+      gsap.from(contactCards, {
+        x: 30,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.contact-info-cards',
+          start: 'top 80%',
+          once: true,
+        },
+      });
+    }
+
+    // Accent line animations
+    gsap.utils.toArray('.accent-line').forEach(el => {
+      gsap.from(el, {
+        width: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+      });
+    });
+  }
+});

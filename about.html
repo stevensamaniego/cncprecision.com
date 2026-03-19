@@ -8,20 +8,20 @@
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- Header -->
-  <header class="header">
+  <header class="header scrolled">
     <div class="container">
       <a href="index.html" class="header__logo">
         <img src="assets/logos/cnc-logo.png" alt="CNC Precision Machines International">
       </a>
       <nav class="header__nav">
         <a href="index.html">Home</a>
-        <a href="about.html">About</a>
+        <a href="about.html" class="active">About</a>
         <a href="products.html">Products</a>
         <a href="services.html">Services</a>
         <a href="contact.html">Contact</a>
@@ -36,6 +36,17 @@
       </button>
     </div>
   </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-overlay"></div>
+  <nav class="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="products.html">Products</a>
+    <a href="services.html">Services</a>
+    <a href="contact.html">Contact</a>
+    <a href="contact.html" class="btn btn--primary" style="text-align:center; margin-top: 16px;">Get a Quote</a>
+  </nav>
 
   <!-- Page Hero -->
   <section class="page-hero">
@@ -56,7 +67,7 @@
           <p>From our offices in El Paso, TX and Cd. Juarez, Chihuahua, we serve manufacturers across El Paso, New Mexico, and Northern Mexico — always close to our customers when they need us most.</p>
         </div>
         <div>
-          <img src="assets/images/Trak-Knee-Mill-K3-4.jpg" alt="TRAK Knee Mill K3">
+          <img src="assets/images/Trak-Knee-Mill-K3-4.jpg" alt="TRAK Knee Mill K3" loading="lazy">
         </div>
       </div>
     </div>
@@ -129,17 +140,17 @@
       </div>
       <div class="about-grid fade-in">
         <div>
-          <img src="assets/images/CHEVALIER-FSG-3A818-GRINDER-4.jpg" alt="Chevalier FSG-3A818 Grinder">
+          <img src="assets/images/CHEVALIER-FSG-3A818-GRINDER-4.jpg" alt="Chevalier FSG-3A818 Grinder" loading="lazy">
         </div>
         <div class="about-content">
           <h2>El Paso, New Mexico &amp; Northern Mexico</h2>
           <p>Our primary service area covers the greater El Paso, TX metropolitan area, southern New Mexico, and Northern Mexico including the Cd. Juarez manufacturing corridor.</p>
           <p>This strategic coverage area places us at the heart of one of North America's most active cross-border manufacturing regions, with direct access to maquiladora operations and domestic manufacturers alike.</p>
-          <ul style="margin-top: 1rem;">
-            <li style="padding: 0.3rem 0 0.3rem 1.5rem; position: relative; color: var(--gray-700);"><span style="position: absolute; left: 0; color: var(--red); font-weight: bold;">&#8226;</span> El Paso, TX (Main Office)</li>
-            <li style="padding: 0.3rem 0 0.3rem 1.5rem; position: relative; color: var(--gray-700);"><span style="position: absolute; left: 0; color: var(--red); font-weight: bold;">&#8226;</span> Cd. Juarez, Chihuahua (Second Office)</li>
-            <li style="padding: 0.3rem 0 0.3rem 1.5rem; position: relative; color: var(--gray-700);"><span style="position: absolute; left: 0; color: var(--red); font-weight: bold;">&#8226;</span> Southern New Mexico</li>
-            <li style="padding: 0.3rem 0 0.3rem 1.5rem; position: relative; color: var(--gray-700);"><span style="position: absolute; left: 0; color: var(--red); font-weight: bold;">&#8226;</span> Northern Mexico (Chihuahua State)</li>
+          <ul>
+            <li>El Paso, TX (Main Office)</li>
+            <li>Cd. Juarez, Chihuahua (Second Office)</li>
+            <li>Southern New Mexico</li>
+            <li>Northern Mexico (Chihuahua State)</li>
           </ul>
         </div>
       </div>
@@ -151,7 +162,7 @@
     <div class="container fade-in">
       <h2>Let's Work Together</h2>
       <p>Get in touch with our team to discuss your machine tool needs.</p>
-      <a href="contact.html" class="btn btn--primary btn--lg">Contact Us</a>
+      <a href="contact.html" class="btn btn--outline btn--lg">Contact Us</a>
       <div class="cta-phone">Or call us: <a href="tel:+19157780108">(915) 778-0108</a></div>
     </div>
   </section>
@@ -197,10 +208,13 @@
       </div>
       <div class="footer__bottom">
         <p>&copy; 2026 CNC Precision Machines Intl. LLC. All rights reserved.</p>
+        <a href="#">Designed by The Noble Engineer</a>
       </div>
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
