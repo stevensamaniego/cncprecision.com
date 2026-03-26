@@ -630,13 +630,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Subpage fade-in elements — more cinematic
+    // Subpage fade-in elements
     gsap.utils.toArray('.fade-in').forEach(el => {
       gsap.from(el, {
-        y: 80,
+        y: 40,
         opacity: 0,
-        rotateX: -10,
-        duration: 0.8,
+        duration: 0.7,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: el,
@@ -646,17 +645,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Service cards — 3D perspective tilt with back overshoot
+    // Service cards — clean stagger entry
     const serviceCards = gsap.utils.toArray('.service-card');
     if (serviceCards.length) {
       gsap.from(serviceCards, {
-        y: 80,
+        y: 40,
         opacity: 0,
-        rotateX: -15,
-        rotateY: 5,
-        duration: 0.8,
+        duration: 0.7,
         stagger: 0.1,
-        ease: 'back.out(1.7)',
+        ease: 'power3.out',
         scrollTrigger: {
           trigger: '.services-grid',
           start: 'top 80%',
