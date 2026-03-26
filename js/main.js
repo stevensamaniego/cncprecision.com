@@ -471,9 +471,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroEl = document.querySelector('.hero-swiper');
   if (heroEl) {
     new Swiper('.hero-swiper', {
-      direction: 'vertical',
+      direction: 'horizontal',
       loop: true,
       speed: 1000,
+      simulateTouch: false,
+      touchStartPreventDefault: false,
       autoplay: {
         delay: 5000,
         disableOnInteraction: false,
@@ -803,5 +805,51 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { trigger: ctaSub, start: 'top 80%', once: true },
       });
     }
+
+    // Product accordion categories — stagger entry
+    const productCategories = gsap.utils.toArray('.product-category');
+    if (productCategories.length) {
+      gsap.from(productCategories, {
+        y: 30,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.05,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.product-accordion',
+          start: 'top 85%',
+          once: true,
+        },
+      });
+    }
   }
+
+  // --- PRODUCT ACCORDION TOGGLE ---
+  document.querySelectorAll('.product-category__header').forEach(header => {
+    header.addEventListener('click', () => {
+      const category = header.closest('.product-category');
+      const body = category.querySelector('.product-category__body');
+      const isActive = category.classList.contains('active');
+
+      // Close all others
+      document.querySelectorAll('.product-category.active').forEach(other => {
+        if (other !== category) {
+          other.classList.remove('active');
+          other.querySelector('.product-category__header').setAttribute('aria-expanded', 'false');
+          other.querySelector('.product-category__body').style.maxHeight = '0';
+        }
+      });
+
+      // Toggle current
+      if (isActive) {
+        category.classList.remove('active');
+        header.setAttribute('aria-expanded', 'false');
+        body.style.maxHeight = '0';
+      } else {
+        category.classList.add('active');
+        header.setAttribute('aria-expanded', 'true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
 });
