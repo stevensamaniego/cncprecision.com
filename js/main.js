@@ -74,8 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Ellipse parameters (match logo proportions)
       const W = window.innerWidth;
       const H = window.innerHeight;
-      const ellipseRx = Math.min(W * 0.14, 130);
-      const ellipseRy = Math.min(H * 0.16, 130);
+      const ellipseRx = Math.min(W * 0.22, 200);
+      const ellipseRy = Math.min(H * 0.14, 130);
       const ellipseCx = W / 2;
       const ellipseCy = H / 2;
 
