@@ -176,8 +176,8 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 
 /* Logo — 3D perspective container */
 .preloader__logo {
-  width: 200px;
-  height: 200px;
+  width: 380px;
+  height: 250px;
   object-fit: contain;
   position: relative;
   z-index: 3;
@@ -227,7 +227,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 @media (max-width: 768px) {
   .preloader__grid,
   .preloader__coords { display: none; }
-  .preloader__logo { width: 160px; height: 160px; }
+  .preloader__logo { width: 280px; height: 180px; }
 }
 
 /* --- WHO WE ARE LOGO FLOAT --- */
