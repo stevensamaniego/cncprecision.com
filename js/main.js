@@ -1,18 +1,18 @@
 /* ============================================
    CNC PRECISION MACHINES — MAIN JS
    GSAP + ScrollTrigger + Swiper
-   Premium Animation Overhaul
+   CNC-Themed Effects: Sparks, Lasers, Breathing
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // --- CINEMATIC PRELOADER ---
   const preloader = document.querySelector('.preloader');
   if (preloader) {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReduced) {
-      // Instant dismiss for reduced motion
       setTimeout(() => {
         preloader.style.display = 'none';
       }, 300);
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const textSpans = preloader.querySelectorAll('.preloader__text span');
       const canvas = document.getElementById('sparkCanvas');
 
-      // --- Spark Particle System ---
+      // --- Preloader Spark Particle System ---
       let sparksRunning = true;
       if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             size: Math.random() * 3 + 1,
             life: Math.random(),
             decay: Math.random() * 0.008 + 0.003,
-            hue: Math.random() > 0.5 ? 0 : 20, // red to orange
+            hue: Math.random() > 0.5 ? 0 : 20,
           });
         }
 
@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = `hsla(${s.hue}, 100%, 55%, ${alpha})`;
             ctx.fill();
 
-            // Glow
             ctx.beginPath();
             ctx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
             ctx.fillStyle = `hsla(${s.hue}, 100%, 55%, ${alpha * 0.15})`;
@@ -80,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animateSparks();
       }
 
-      // --- GSAP Timeline ---
+      // --- GSAP Preloader Timeline ---
       const tl = gsap.timeline({
         onComplete: () => {
           sparksRunning = false;
@@ -96,10 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Stage 1: Sparks scatter (already running), wait a beat
+      // Stage 1: Sparks scatter, wait a beat
       tl.to({}, { duration: 0.6 });
 
-      // Stage 2: Logo fades in from behind sparks, blurred -> sharp, scale 0.95 -> 1.0
+      // Stage 2: Logo fades in
       tl.to(logo, {
         opacity: 1,
         filter: 'blur(0px) brightness(1)',
@@ -121,14 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out',
       });
 
-      // Stage 4: Light sweep across logo
+      // Stage 4: Light sweep
       tl.to(sweep, {
         left: '140%',
         duration: 0.8,
         ease: 'power2.inOut',
       }, '-=0.6');
 
-      // Stage 5: Text letter-by-letter reveal
+      // Stage 5: Text reveal
       tl.to(textSpans, {
         opacity: 1,
         y: 0,
@@ -137,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power3.out',
       }, '-=0.3');
 
-      // Stage 6: Subtle pulse/shake on final reveal
+      // Stage 6: Final pulse
       tl.to(logo, {
         scale: 1.03,
         duration: 0.1,
@@ -149,9 +148,30 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'elastic.out(1, 0.4)',
       });
 
-      // Stage 7: Hold then fade out
-      tl.to({}, { duration: 0.8 });
+      // Stage 7: Transition into breathing animation
+      tl.call(() => {
+        gsap.set(logo, { clearProps: 'filter,transform' });
+        logo.classList.add('logo-breathing');
+      });
+
+      // Hold with breathing visible
+      tl.to({}, { duration: 1.5 });
     }
+  }
+
+  // --- WHO WE ARE LOGO BREATHING (IntersectionObserver) ---
+  const aboutLogo = document.querySelector('.about-preview__visual img');
+  if (aboutLogo && !prefersReduced) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          aboutLogo.classList.add('logo-breathing');
+        } else {
+          aboutLogo.classList.remove('logo-breathing');
+        }
+      });
+    }, { threshold: 0.2 });
+    observer.observe(aboutLogo);
   }
 
   // --- HEADER SCROLL ---
@@ -236,12 +256,256 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // =========================================
+  //  CNC BACKGROUND PARTICLE CANVAS
+  //  Sparks + Laser Traces
+  // =========================================
+  (function initCNCCanvas() {
+    if (prefersReduced) return;
+
+    const canvas = document.getElementById('cncCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const isMobile = window.innerWidth < 768;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = document.documentElement.scrollHeight;
+    }
+    resize();
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resize, 200);
+    });
+
+    // --- Spark System ---
+    const MAX_SPARKS = isMobile ? 25 : 60;
+    const TRAIL_LEN = isMobile ? 3 : 5;
+    const sparks = [];
+
+    function spawnSpark(bx, by, burst) {
+      let x, y, vx, vy;
+      if (burst && bx !== undefined) {
+        x = bx;
+        y = by;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 3 + 1.5;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed - 1;
+      } else {
+        const edge = Math.random();
+        if (edge < 0.5) {
+          x = edge < 0.25 ? -5 : canvas.width + 5;
+          y = Math.random() * canvas.height;
+        } else {
+          x = Math.random() * canvas.width;
+          y = edge < 0.75 ? -5 : canvas.height + 5;
+        }
+        const tx = Math.random() * canvas.width;
+        const ty = Math.random() * canvas.height;
+        const angle = Math.atan2(ty - y, tx - x);
+        const speed = Math.random() * 1.5 + 0.5;
+        vx = Math.cos(angle) * speed;
+        vy = Math.sin(angle) * speed;
+      }
+
+      return {
+        x, y, vx, vy,
+        life: 1,
+        decay: Math.random() * 0.008 + 0.004,
+        size: Math.random() * 2 + 0.5,
+        trail: [],
+        gravity: 0.015 + Math.random() * 0.025,
+      };
+    }
+
+    // Seed initial sparks
+    for (let i = 0; i < MAX_SPARKS * 0.4; i++) {
+      const s = spawnSpark();
+      s.life = Math.random();
+      s.x = Math.random() * canvas.width;
+      s.y = Math.random() * canvas.height;
+      sparks.push(s);
+    }
+
+    // --- Laser Trace System ---
+    const MAX_LASERS = isMobile ? 1 : 3;
+    const lasers = [];
+
+    function spawnLaser() {
+      const goRight = Math.random() > 0.5;
+      const y = Math.random() * canvas.height;
+      return {
+        x: goRight ? -150 : canvas.width + 150,
+        y: y,
+        speed: goRight ? (Math.random() * 1.5 + 1) : -(Math.random() * 1.5 + 1),
+        angle: (Math.random() - 0.5) * 0.15,
+        length: Math.random() * 250 + 120,
+        pulse: Math.random() * Math.PI * 2,
+      };
+    }
+
+    for (let i = 0; i < MAX_LASERS; i++) {
+      lasers.push(spawnLaser());
+    }
+
+    // --- Burst timer ---
+    let burstCooldown = 0;
+
+    // --- Scroll-aware viewport ---
+    let scrollY = window.scrollY;
+    let viewH = window.innerHeight;
+    window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+    window.addEventListener('resize', () => { viewH = window.innerHeight; }, { passive: true });
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const vpTop = scrollY;
+      const vpBot = scrollY + viewH;
+
+      // --- Occasional burst ---
+      burstCooldown++;
+      if (burstCooldown > (isMobile ? 400 : 200) && Math.random() < 0.015) {
+        const bx = Math.random() * canvas.width;
+        const by = vpTop + Math.random() * viewH;
+        const count = isMobile ? 4 : 10;
+        for (let i = 0; i < count && sparks.length < MAX_SPARKS; i++) {
+          sparks.push(spawnSpark(bx, by, true));
+        }
+        burstCooldown = 0;
+      }
+
+      // --- Maintain spark count ---
+      while (sparks.length < MAX_SPARKS * 0.4) {
+        const s = spawnSpark();
+        s.y = vpTop + Math.random() * viewH;
+        sparks.push(s);
+      }
+
+      // --- Update & draw sparks ---
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+
+        s.trail.push({ x: s.x, y: s.y });
+        if (s.trail.length > TRAIL_LEN) s.trail.shift();
+
+        s.vy += s.gravity;
+        s.x += s.vx;
+        s.y += s.vy;
+        s.life -= s.decay;
+
+        if (s.life <= 0 || s.x < -60 || s.x > canvas.width + 60 || s.y > canvas.height + 60 || s.y < -60) {
+          sparks.splice(i, 1);
+          continue;
+        }
+
+        // Skip drawing if far from viewport
+        if (s.y < vpTop - 100 || s.y > vpBot + 100) continue;
+
+        // Color based on life: white-hot → orange → red
+        let r, g, b;
+        if (s.life > 0.7) {
+          r = 255;
+          g = Math.min(255, 200 + (s.life - 0.7) * 183);
+          b = Math.min(255, 100 + (s.life - 0.7) * 517);
+        } else if (s.life > 0.3) {
+          const t = (s.life - 0.3) / 0.4;
+          r = 255;
+          g = Math.round(20 + t * 180);
+          b = 0;
+        } else {
+          r = 214; g = 6; b = 0;
+        }
+
+        // Draw trail
+        for (let t = 0; t < s.trail.length; t++) {
+          const pt = s.trail[t];
+          const ta = (t / s.trail.length) * s.life * 0.35;
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, s.size * 0.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${ta})`;
+          ctx.fill();
+        }
+
+        // Draw spark head
+        const alpha = s.life * 0.7;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        ctx.fill();
+
+        // Glow
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.08})`;
+        ctx.fill();
+      }
+
+      // --- Update & draw laser traces ---
+      for (let i = 0; i < lasers.length; i++) {
+        const l = lasers[i];
+        l.x += l.speed;
+        l.y += Math.sin(l.angle) * Math.abs(l.speed) * 0.5;
+        l.pulse += 0.04;
+
+        const offRight = l.speed > 0 && l.x - l.length > canvas.width + 60;
+        const offLeft = l.speed < 0 && l.x + l.length < -60;
+        if (offRight || offLeft) {
+          lasers[i] = spawnLaser();
+          lasers[i].y = vpTop + Math.random() * viewH;
+          continue;
+        }
+
+        // Skip if not in viewport
+        if (l.y < vpTop - 100 || l.y > vpBot + 100) continue;
+
+        const intensity = 0.5 + Math.sin(l.pulse) * 0.3;
+        const headX = l.x;
+        const headY = l.y;
+        const dir = l.speed > 0 ? -1 : 1;
+        const tailX = l.x + dir * l.length;
+        const tailY = l.y + dir * Math.sin(l.angle) * l.length * 0.5;
+
+        // Laser line
+        const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+        grad.addColorStop(0, 'rgba(214,6,0,0)');
+        grad.addColorStop(0.6, `rgba(214,6,0,${0.12 * intensity})`);
+        grad.addColorStop(1, `rgba(214,6,0,${0.35 * intensity})`);
+
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(headX, headY);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Bright head
+        ctx.beginPath();
+        ctx.arc(headX, headY, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${0.5 * intensity})`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(headX, headY, 5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(214,6,0,${0.15 * intensity})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  })();
+
   // --- GSAP + SCROLLTRIGGER ---
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return; // Skip all scroll animations for reduced motion
+    if (prefersReduced) return;
 
     // --- Helper: letter-by-letter header reveal ---
     function animateHeaderText(el) {
@@ -267,10 +531,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Section headers — letter-by-letter reveal
+    // Section headers
     gsap.utils.toArray('.section-header').forEach(el => {
       animateHeaderText(el);
-      // Animate the rest of the header (p, accent-line)
       const children = el.querySelectorAll('p, .accent-line');
       if (children.length) {
         gsap.from(children, {
@@ -288,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Machine cards — cinematic stagger with rotation
+    // Machine cards
     const machineCards = gsap.utils.toArray('.machine-card');
     if (machineCards.length) {
       gsap.from(machineCards, {
@@ -306,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Industry cards — stagger with rotation
+    // Industry cards
     const industryCards = gsap.utils.toArray('.industry-card');
     if (industryCards.length) {
       gsap.from(industryCards, {
@@ -324,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // About preview — text slides in, visual scales in with elastic
+    // About preview
     const aboutText = document.querySelector('.about-preview__text');
     const aboutVisual = document.querySelector('.about-preview__visual');
     if (aboutText) {
@@ -347,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // CTA section
+    // CTA section (home)
     const ctaSection = document.querySelector('.cta');
     if (ctaSection) {
       gsap.from(ctaSection.children, {
@@ -360,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Subpage fade-in elements — more cinematic
+    // Subpage fade-in elements
     gsap.utils.toArray('.fade-in').forEach(el => {
       gsap.from(el, {
         y: 80,
@@ -376,7 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Service cards — 3D perspective tilt with back overshoot
+    // Service cards
     const serviceCards = gsap.utils.toArray('.service-card');
     if (serviceCards.length) {
       gsap.from(serviceCards, {
@@ -394,7 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       });
 
-      // Icon glow on enter
       serviceCards.forEach(card => {
         const icon = card.querySelector('.service-card__icon');
         if (icon) {
@@ -420,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Product cards — stagger with rotation
+    // Product cards
     const productCards = gsap.utils.toArray('.product-card');
     if (productCards.length) {
       gsap.from(productCards, {
@@ -438,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Stat numbers counter animation
+    // Stat counters
     gsap.utils.toArray('.stat-item__number').forEach(el => {
       const val = el.textContent;
       const num = parseInt(val);
@@ -457,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Contact cards — slide in with stagger
+    // Contact cards
     const contactCards = gsap.utils.toArray('.contact-info-card');
     if (contactCards.length) {
       gsap.from(contactCards, {
@@ -475,7 +737,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Accent line animations
+    // Accent lines
     gsap.utils.toArray('.accent-line').forEach(el => {
       gsap.from(el, {
         width: 0,
@@ -485,7 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Image clip-path wipe reveals
+    // Image clip-path reveals
     gsap.utils.toArray('.about-grid img, .product-card__image').forEach(el => {
       gsap.from(el, {
         clipPath: 'inset(0 100% 0 0)',
@@ -499,7 +761,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Page hero text animations
+    // Page hero text
     const pageHero = document.querySelector('.page-hero');
     if (pageHero) {
       const h1 = pageHero.querySelector('h1');
@@ -536,5 +798,51 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollTrigger: { trigger: ctaSub, start: 'top 80%', once: true },
       });
     }
+
+    // =========================================
+    //  LASER DIVIDER ANIMATIONS
+    // =========================================
+    gsap.utils.toArray('.laser-divider').forEach(divider => {
+      const line = divider.querySelector('.laser-divider__line');
+      const point = divider.querySelector('.laser-divider__point');
+      if (!line || !point) return;
+
+      const divTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: divider,
+          start: 'top 90%',
+          once: true,
+        }
+      });
+
+      // Point appears and sweeps left to right
+      divTl.set(point, { opacity: 1, left: '0%' });
+      divTl.to(point, {
+        left: '100%',
+        duration: 1.2,
+        ease: 'power2.inOut',
+      });
+
+      // Line draws behind the point
+      divTl.to(line, {
+        width: '100%',
+        duration: 1.2,
+        ease: 'power2.inOut',
+      }, '<');
+
+      // Point fades after reaching end
+      divTl.to(point, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+      }, '-=0.1');
+
+      // Line settles to subtle
+      divTl.to(line, {
+        opacity: 0.4,
+        duration: 0.5,
+        ease: 'power2.out',
+      });
+    });
   }
 });
