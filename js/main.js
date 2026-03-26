@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const ellipseRx = Math.min(W * 0.22, 200);
       const ellipseRy = Math.min(H * 0.14, 130);
       const ellipseCx = W / 2;
-      const ellipseCy = H / 2 - 25;
+      const ellipseCy = H / 2 - 40;
 
       function getEllipsePoint(t) {
         const angle = t * Math.PI * 2 - Math.PI / 2; // start at top
