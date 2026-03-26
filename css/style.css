@@ -89,7 +89,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   filter: blur(12px) brightness(0.5);
   transform: scale(0.95);
   border-radius: 12px;
-  mix-blend-mode: lighten;
+  
 }
 
 .preloader__sweep {
@@ -820,7 +820,7 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 .about-preview__visual img {
   max-width: 360px;
   width: 100%;
-  mix-blend-mode: lighten;
+  
 }
 
 /* --- CTA SECTION --- */
