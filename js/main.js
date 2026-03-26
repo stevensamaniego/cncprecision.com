@@ -282,69 +282,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Spark System ---
-    const MAX_SPARKS = isMobile ? 25 : 60;
-    const TRAIL_LEN = isMobile ? 3 : 5;
+    const MAX_SPARKS = isMobile ? 20 : 40;
+    const TRAIL_LEN = isMobile ? 5 : 10;
     const sparks = [];
 
     function spawnSpark(bx, by, burst) {
-      let x, y, vx, vy;
+      let x, y, vx, vy, decay, size;
       if (burst && bx !== undefined) {
+        // Burst spark — fast, bright, short-lived arc like angle grinder
         x = bx;
         y = by;
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 3 + 1.5;
+        const speed = Math.random() * 5 + 5; // 5-10 initial speed
         vx = Math.cos(angle) * speed;
-        vy = Math.sin(angle) * speed - 1;
+        vy = Math.sin(angle) * speed - 2; // upward bias
+        decay = Math.random() * 0.02 + 0.025; // 0.025-0.045 — burns out fast
+        size = Math.random() * 1.5 + 1;
       } else {
-        const edge = Math.random();
-        if (edge < 0.5) {
-          x = edge < 0.25 ? -5 : canvas.width + 5;
-          y = Math.random() * canvas.height;
-        } else {
-          x = Math.random() * canvas.width;
-          y = edge < 0.75 ? -5 : canvas.height + 5;
-        }
-        const tx = Math.random() * canvas.width;
-        const ty = Math.random() * canvas.height;
-        const angle = Math.atan2(ty - y, tx - x);
-        const speed = Math.random() * 1.5 + 0.5;
-        vx = Math.cos(angle) * speed;
+        // Ambient spark — still fast and arc-shaped, not floaty
+        x = Math.random() * canvas.width;
+        y = -5;
+        const angle = Math.PI * 0.25 + Math.random() * Math.PI * 0.5; // downward spray
+        const speed = Math.random() * 4 + 4; // 4-8
+        vx = Math.cos(angle) * speed * (Math.random() > 0.5 ? 1 : -1);
         vy = Math.sin(angle) * speed;
+        decay = Math.random() * 0.015 + 0.02; // 0.02-0.035
+        size = Math.random() * 1.2 + 0.8;
       }
 
       return {
         x, y, vx, vy,
         life: 1,
-        decay: Math.random() * 0.008 + 0.004,
-        size: Math.random() * 2 + 0.5,
+        decay: decay,
+        size: size,
         trail: [],
-        gravity: 0.015 + Math.random() * 0.025,
+        gravity: 0.15 + Math.random() * 0.15, // 0.15-0.3 — visible arcs
       };
     }
 
-    // Seed initial sparks
-    for (let i = 0; i < MAX_SPARKS * 0.4; i++) {
-      const s = spawnSpark();
-      s.life = Math.random();
-      s.x = Math.random() * canvas.width;
-      s.y = Math.random() * canvas.height;
-      sparks.push(s);
-    }
-
-    // --- Laser Trace System ---
-    const MAX_LASERS = isMobile ? 1 : 3;
+    // --- Laser Trace System (desktop only) ---
+    const MAX_LASERS = isMobile ? 0 : 2;
     const lasers = [];
+    const laserMicroSparks = []; // tiny sparks emitted from laser head
 
-    function spawnLaser() {
-      const goRight = Math.random() > 0.5;
-      const y = Math.random() * canvas.height;
+    function spawnLaser(vpTop, vpH) {
+      // Pick a start point on the visible viewport
+      const startX = Math.random() * canvas.width;
+      const startY = (vpTop || 0) + Math.random() * (vpH || window.innerHeight);
+      // Pick a target point — straight line or gentle curve
+      const targetX = Math.random() * canvas.width;
+      const targetY = (vpTop || 0) + Math.random() * (vpH || window.innerHeight);
+
       return {
-        x: goRight ? -150 : canvas.width + 150,
-        y: y,
-        speed: goRight ? (Math.random() * 1.5 + 1) : -(Math.random() * 1.5 + 1),
-        angle: (Math.random() - 0.5) * 0.15,
-        length: Math.random() * 250 + 120,
-        pulse: Math.random() * Math.PI * 2,
+        x: startX,
+        y: startY,
+        targetX: targetX,
+        targetY: targetY,
+        trail: [{ x: startX, y: startY }],
+        maxTrailLen: 80,
+        speed: 2.5 + Math.random() * 1.5, // deliberate, not drifty
+        paused: 0, // frames to pause at endpoint
+        pauseTimer: 0,
+        progress: 0,
+        // Gentle curve control point
+        cpX: (startX + targetX) / 2 + (Math.random() - 0.5) * 200,
+        cpY: (startY + targetY) / 2 + (Math.random() - 0.5) * 100,
       };
     }
 
@@ -367,22 +369,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const vpTop = scrollY;
       const vpBot = scrollY + viewH;
 
-      // --- Occasional burst ---
+      // --- Frequent bursts (like angle grinder hitting steel) ---
       burstCooldown++;
-      if (burstCooldown > (isMobile ? 400 : 200) && Math.random() < 0.015) {
+      const burstInterval = isMobile ? 120 : 60;
+      if (burstCooldown > burstInterval && Math.random() < 0.06) {
         const bx = Math.random() * canvas.width;
         const by = vpTop + Math.random() * viewH;
-        const count = isMobile ? 4 : 10;
+        const count = isMobile ? 8 : Math.floor(Math.random() * 11) + 15; // 15-25
         for (let i = 0; i < count && sparks.length < MAX_SPARKS; i++) {
           sparks.push(spawnSpark(bx, by, true));
         }
         burstCooldown = 0;
       }
 
-      // --- Maintain spark count ---
-      while (sparks.length < MAX_SPARKS * 0.4) {
+      // --- Only a few ambient sparks between bursts ---
+      while (sparks.length < (isMobile ? 3 : 6)) {
         const s = spawnSpark();
-        s.y = vpTop + Math.random() * viewH;
+        s.y = vpTop + Math.random() * viewH * 0.3;
         sparks.push(s);
       }
 
@@ -394,6 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (s.trail.length > TRAIL_LEN) s.trail.shift();
 
         s.vy += s.gravity;
+        s.vx *= 0.99; // slight air drag
         s.x += s.vx;
         s.y += s.vy;
         s.life -= s.decay;
@@ -406,92 +410,231 @@ document.addEventListener('DOMContentLoaded', () => {
         // Skip drawing if far from viewport
         if (s.y < vpTop - 100 || s.y > vpBot + 100) continue;
 
-        // Color based on life: white-hot → orange → red
+        // Color: white-hot → yellow → orange → red (fast transition)
         let r, g, b;
-        if (s.life > 0.7) {
+        if (s.life > 0.8) {
+          // White-hot
+          r = 255; g = 255; b = 255;
+        } else if (s.life > 0.6) {
+          // Yellow-white to bright orange
+          const t = (s.life - 0.6) / 0.2;
           r = 255;
-          g = Math.min(255, 200 + (s.life - 0.7) * 183);
-          b = Math.min(255, 100 + (s.life - 0.7) * 517);
+          g = Math.round(180 + t * 75);
+          b = Math.round(t * 180);
         } else if (s.life > 0.3) {
-          const t = (s.life - 0.3) / 0.4;
+          // Orange to red
+          const t = (s.life - 0.3) / 0.3;
           r = 255;
-          g = Math.round(20 + t * 180);
+          g = Math.round(40 + t * 140);
           b = 0;
         } else {
-          r = 214; g = 6; b = 0;
+          // Dim red
+          const t = s.life / 0.3;
+          r = Math.round(150 + t * 64);
+          g = Math.round(t * 6);
+          b = 0;
         }
 
-        // Draw trail
-        for (let t = 0; t < s.trail.length; t++) {
-          const pt = s.trail[t];
-          const ta = (t / s.trail.length) * s.life * 0.35;
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, s.size * 0.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${r},${g},${b},${ta})`;
-          ctx.fill();
+        // Draw trail as a connected path with tapering width
+        if (s.trail.length > 1) {
+          for (let t = 1; t < s.trail.length; t++) {
+            const p0 = s.trail[t - 1];
+            const p1 = s.trail[t];
+            const frac = t / s.trail.length;
+            const alpha = frac * s.life * 0.8;
+            const width = frac * s.size * 1.5;
+            ctx.beginPath();
+            ctx.moveTo(p0.x, p0.y);
+            ctx.lineTo(p1.x, p1.y);
+            ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+          }
         }
 
-        // Draw spark head
-        const alpha = s.life * 0.7;
+        // Draw spark head — bright dot
+        const alpha = Math.min(1, s.life * 1.2);
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
         ctx.fill();
 
-        // Glow
+        // Hot glow around head
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.08})`;
+        ctx.arc(s.x, s.y, s.size * 4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,200,50,${alpha * 0.12})`;
         ctx.fill();
       }
 
-      // --- Update & draw laser traces ---
+      // --- Update & draw laser traces (desktop only) ---
       for (let i = 0; i < lasers.length; i++) {
         const l = lasers[i];
-        l.x += l.speed;
-        l.y += Math.sin(l.angle) * Math.abs(l.speed) * 0.5;
-        l.pulse += 0.04;
 
-        const offRight = l.speed > 0 && l.x - l.length > canvas.width + 60;
-        const offLeft = l.speed < 0 && l.x + l.length < -60;
-        if (offRight || offLeft) {
-          lasers[i] = spawnLaser();
-          lasers[i].y = vpTop + Math.random() * viewH;
+        // Pause at endpoints (CNC repositioning)
+        if (l.pauseTimer > 0) {
+          l.pauseTimer--;
+          // Still draw the head glowing while paused
+          const hx = l.x;
+          const hy = l.y;
+          if (hy >= vpTop - 50 && hy <= vpBot + 50) {
+            // Pulsing glow while paused
+            const pulse = 0.6 + Math.sin(l.pauseTimer * 0.3) * 0.4;
+            const glowGrad = ctx.createRadialGradient(hx, hy, 0, hx, hy, 10 * pulse);
+            glowGrad.addColorStop(0, `rgba(255,255,255,${0.9 * pulse})`);
+            glowGrad.addColorStop(0.3, `rgba(214,6,0,${0.5 * pulse})`);
+            glowGrad.addColorStop(1, 'rgba(214,6,0,0)');
+            ctx.beginPath();
+            ctx.arc(hx, hy, 10 * pulse, 0, Math.PI * 2);
+            ctx.fillStyle = glowGrad;
+            ctx.fill();
+          }
+          if (l.pauseTimer <= 0) {
+            // Pick new target
+            l.targetX = Math.random() * canvas.width;
+            l.targetY = vpTop + Math.random() * viewH;
+            l.trail = [{ x: l.x, y: l.y }];
+            l.cpX = (l.x + l.targetX) / 2 + (Math.random() - 0.5) * 150;
+            l.cpY = (l.y + l.targetY) / 2 + (Math.random() - 0.5) * 80;
+            l.progress = 0;
+            const dx = l.targetX - l.x;
+            const dy = l.targetY - l.y;
+            l.totalDist = Math.sqrt(dx * dx + dy * dy);
+          }
           continue;
         }
 
-        // Skip if not in viewport
+        // Move toward target along quadratic bezier
+        const dx = l.targetX - l.x;
+        const dy = l.targetY - l.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (!l.totalDist) l.totalDist = dist || 1;
+        l.progress += l.speed / l.totalDist;
+        if (l.progress > 1) l.progress = 1;
+
+        const t = l.progress;
+        const mt = 1 - t;
+        const startPt = l.trail[0];
+        const newX = mt * mt * startPt.x + 2 * mt * t * l.cpX + t * t * l.targetX;
+        const newY = mt * mt * startPt.y + 2 * mt * t * l.cpY + t * t * l.targetY;
+
+        l.x = newX;
+        l.y = newY;
+
+        l.trail.push({ x: l.x, y: l.y });
+        if (l.trail.length > l.maxTrailLen) l.trail.shift();
+
+        // Arrived at target — pause before next move
+        if (l.progress >= 1) {
+          l.pauseTimer = Math.floor(Math.random() * 40) + 20; // 20-60 frame pause
+          continue;
+        }
+
+        // Skip drawing if far from viewport
         if (l.y < vpTop - 100 || l.y > vpBot + 100) continue;
 
-        const intensity = 0.5 + Math.sin(l.pulse) * 0.3;
-        const headX = l.x;
-        const headY = l.y;
-        const dir = l.speed > 0 ? -1 : 1;
-        const tailX = l.x + dir * l.length;
-        const tailY = l.y + dir * Math.sin(l.angle) * l.length * 0.5;
+        // Draw laser trail — crisp red line with glow
+        if (l.trail.length > 1) {
+          // Outer glow pass
+          ctx.beginPath();
+          ctx.moveTo(l.trail[0].x, l.trail[0].y);
+          for (let j = 1; j < l.trail.length; j++) {
+            ctx.lineTo(l.trail[j].x, l.trail[j].y);
+          }
+          ctx.strokeStyle = 'rgba(214,6,0,0.3)';
+          ctx.lineWidth = 4;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.stroke();
 
-        // Laser line
-        const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
-        grad.addColorStop(0, 'rgba(214,6,0,0)');
-        grad.addColorStop(0.6, `rgba(214,6,0,${0.12 * intensity})`);
-        grad.addColorStop(1, `rgba(214,6,0,${0.35 * intensity})`);
+          // Crisp core line
+          ctx.beginPath();
+          ctx.moveTo(l.trail[0].x, l.trail[0].y);
+          for (let j = 1; j < l.trail.length; j++) {
+            ctx.lineTo(l.trail[j].x, l.trail[j].y);
+          }
+          ctx.strokeStyle = 'rgba(214,6,0,0.85)';
+          ctx.lineWidth = 1.5;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.stroke();
 
+          // Fade out the tail end
+          if (l.trail.length > 3) {
+            const fadeLen = Math.min(15, Math.floor(l.trail.length * 0.3));
+            ctx.beginPath();
+            ctx.moveTo(l.trail[0].x, l.trail[0].y);
+            for (let j = 1; j < fadeLen; j++) {
+              ctx.lineTo(l.trail[j].x, l.trail[j].y);
+            }
+            ctx.strokeStyle = 'rgba(10,10,10,0.8)';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+          }
+        }
+
+        // Bright white laser head with radial gradient glow
+        const hx = l.x;
+        const hy = l.y;
+        const headGrad = ctx.createRadialGradient(hx, hy, 0, hx, hy, 12);
+        headGrad.addColorStop(0, 'rgba(255,255,255,1)');
+        headGrad.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+        headGrad.addColorStop(0.5, 'rgba(214,6,0,0.4)');
+        headGrad.addColorStop(1, 'rgba(214,6,0,0)');
         ctx.beginPath();
-        ctx.moveTo(tailX, tailY);
-        ctx.lineTo(headX, headY);
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Bright head
-        ctx.beginPath();
-        ctx.arc(headX, headY, 2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${0.5 * intensity})`;
+        ctx.arc(hx, hy, 12, 0, Math.PI * 2);
+        ctx.fillStyle = headGrad;
         ctx.fill();
 
+        // Bright white core dot
         ctx.beginPath();
-        ctx.arc(headX, headY, 5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(214,6,0,${0.15 * intensity})`;
+        ctx.arc(hx, hy, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+        ctx.fill();
+
+        // Emit 2-3 micro sparks from laser head
+        const microCount = Math.floor(Math.random() * 2) + 2;
+        for (let m = 0; m < microCount; m++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 3 + 1;
+          laserMicroSparks.push({
+            x: hx, y: hy,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1,
+            life: 1,
+            decay: 0.06 + Math.random() * 0.06, // very short life
+            size: Math.random() * 0.8 + 0.4,
+          });
+        }
+        // Cap micro sparks
+        while (laserMicroSparks.length > 60) laserMicroSparks.shift();
+      }
+
+      // --- Update & draw laser micro sparks ---
+      for (let i = laserMicroSparks.length - 1; i >= 0; i--) {
+        const ms = laserMicroSparks[i];
+        ms.vy += 0.12;
+        ms.x += ms.vx;
+        ms.y += ms.vy;
+        ms.life -= ms.decay;
+
+        if (ms.life <= 0) {
+          laserMicroSparks.splice(i, 1);
+          continue;
+        }
+
+        if (ms.y < vpTop - 50 || ms.y > vpBot + 50) continue;
+
+        // White to orange micro spark
+        const ml = ms.life;
+        const mr = 255;
+        const mg = Math.round(ml > 0.5 ? 255 : 100 + ml * 310);
+        const mb = Math.round(ml > 0.5 ? 200 * ml : 0);
+        ctx.beginPath();
+        ctx.arc(ms.x, ms.y, ms.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${mr},${mg},${mb},${ml})`;
         ctx.fill();
       }
 
