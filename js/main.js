@@ -12,145 +12,415 @@ document.addEventListener('DOMContentLoaded', () => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReduced) {
-      // Instant dismiss for reduced motion
-      setTimeout(() => {
-        preloader.style.display = 'none';
-      }, 300);
+      const logo = preloader.querySelector('.preloader__logo');
+      if (logo) { logo.style.opacity = '1'; logo.style.filter = 'none'; logo.style.transform = 'none'; }
+      preloader.querySelectorAll('.preloader__text span').forEach(s => { s.style.opacity = '1'; s.style.transform = 'none'; });
+      setTimeout(() => { preloader.style.display = 'none'; }, 400);
     } else {
       const logo = preloader.querySelector('.preloader__logo');
       const sweep = preloader.querySelector('.preloader__sweep');
       const textSpans = preloader.querySelectorAll('.preloader__text span');
       const canvas = document.getElementById('sparkCanvas');
+      const laserLine = preloader.querySelector('.preloader__laser-line');
+      const gridContainer = preloader.querySelector('.preloader__grid');
+      const coords = preloader.querySelectorAll('.preloader__coords .coord');
+      const isMobile = window.innerWidth <= 768;
 
-      // --- Spark Particle System ---
-      let sparksRunning = true;
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+      // --- Build grid lines ---
+      if (gridContainer && !isMobile) {
+        const GRID_SPACING = 80;
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const cols = Math.ceil(window.innerWidth / GRID_SPACING) + 2;
+        const rows = Math.ceil(window.innerHeight / GRID_SPACING) + 2;
 
-        const sparks = [];
-        const SPARK_COUNT = 60;
-
-        for (let i = 0; i < SPARK_COUNT; i++) {
-          sparks.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 3,
-            vy: (Math.random() - 0.5) * 3,
-            size: Math.random() * 3 + 1,
-            life: Math.random(),
-            decay: Math.random() * 0.008 + 0.003,
-            hue: Math.random() > 0.5 ? 0 : 20, // red to orange
-          });
+        for (let i = 0; i < rows; i++) {
+          const y = cy + (i - Math.floor(rows / 2)) * GRID_SPACING;
+          const line = document.createElement('div');
+          line.className = 'grid-line grid-h';
+          line.style.top = y + 'px';
+          line.dataset.dist = Math.abs(i - Math.floor(rows / 2));
+          gridContainer.appendChild(line);
         }
+        for (let i = 0; i < cols; i++) {
+          const x = cx + (i - Math.floor(cols / 2)) * GRID_SPACING;
+          const line = document.createElement('div');
+          line.className = 'grid-line grid-v';
+          line.style.left = x + 'px';
+          line.dataset.dist = Math.abs(i - Math.floor(cols / 2));
+          gridContainer.appendChild(line);
+        }
+        // Crosshairs at a few intersections near center
+        for (let r = -2; r <= 2; r++) {
+          for (let c = -2; c <= 2; c++) {
+            const ch = document.createElement('div');
+            ch.className = 'grid-crosshair';
+            ch.style.left = (cx + c * GRID_SPACING - 4) + 'px';
+            ch.style.top = (cy + r * GRID_SPACING - 4) + 'px';
+            ch.dataset.dist = Math.abs(r) + Math.abs(c);
+            gridContainer.appendChild(ch);
+          }
+        }
+      }
 
-        function animateSparks() {
-          if (!sparksRunning) return;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // --- Canvas setup for laser trace + sparks + coolant ---
+      let animRunning = true;
+      let laserProgress = -1;   // -1 = not started, 0..1 = tracing
+      let laserTrail = [];       // accumulated path points
+      let sparks = [];
+      let coolantParticles = [];
+      let ctx;
 
+      // Ellipse parameters (match logo proportions)
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const ellipseRx = Math.min(W * 0.14, 130);
+      const ellipseRy = Math.min(H * 0.16, 130);
+      const ellipseCx = W / 2;
+      const ellipseCy = H / 2;
+
+      function getEllipsePoint(t) {
+        const angle = t * Math.PI * 2 - Math.PI / 2; // start at top
+        return {
+          x: ellipseCx + Math.cos(angle) * ellipseRx,
+          y: ellipseCy + Math.sin(angle) * ellipseRy,
+        };
+      }
+
+      if (canvas) {
+        ctx = canvas.getContext('2d');
+        canvas.width = W;
+        canvas.height = H;
+
+        function renderFrame() {
+          if (!animRunning) return;
+          ctx.clearRect(0, 0, W, H);
+
+          // Draw laser trail (accumulated glow path)
+          if (laserTrail.length > 1) {
+            // Outer glow
+            ctx.save();
+            ctx.strokeStyle = 'rgba(214, 6, 0, 0.4)';
+            ctx.lineWidth = 6;
+            ctx.shadowColor = '#D60600';
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.moveTo(laserTrail[0].x, laserTrail[0].y);
+            for (let i = 1; i < laserTrail.length; i++) {
+              ctx.lineTo(laserTrail[i].x, laserTrail[i].y);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // White-hot core
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(laserTrail[0].x, laserTrail[0].y);
+            for (let i = 1; i < laserTrail.length; i++) {
+              ctx.lineTo(laserTrail[i].x, laserTrail[i].y);
+            }
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // Draw laser head glow
+          if (laserProgress >= 0 && laserProgress <= 1) {
+            const head = getEllipsePoint(laserProgress);
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(head.x, head.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = '#D60600';
+            ctx.shadowBlur = 25;
+            ctx.fill();
+            ctx.restore();
+
+            // Bright center
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(head.x, head.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+            ctx.restore();
+          }
+
+          // Spark particles
+          sparks = sparks.filter(s => s.life > 0);
           sparks.forEach(s => {
             s.x += s.vx;
             s.y += s.vy;
+            s.vy += 0.15; // gravity
             s.life -= s.decay;
+            const alpha = Math.max(0, s.life);
 
-            if (s.life <= 0) {
-              s.x = canvas.width / 2 + (Math.random() - 0.5) * canvas.width * 0.6;
-              s.y = canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.6;
-              s.life = 1;
-              s.vx = (Math.random() - 0.5) * 4;
-              s.vy = (Math.random() - 0.5) * 4;
-            }
-
-            const alpha = s.life * 0.9;
+            // Hot core
             ctx.beginPath();
             ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${s.hue}, 100%, 55%, ${alpha})`;
+            ctx.fillStyle = `rgba(255, ${180 + Math.random() * 75}, 50, ${alpha})`;
             ctx.fill();
 
             // Glow
             ctx.beginPath();
-            ctx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${s.hue}, 100%, 55%, ${alpha * 0.15})`;
+            ctx.arc(s.x, s.y, s.size * 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(214, 6, 0, ${alpha * 0.3})`;
             ctx.fill();
           });
 
-          requestAnimationFrame(animateSparks);
+          // Coolant mist particles
+          coolantParticles = coolantParticles.filter(p => p.life > 0);
+          coolantParticles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy -= 0.02; // drift up
+            p.life -= p.decay;
+            p.size *= 1.01;
+            const alpha = Math.max(0, p.life * 0.15);
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(180, 220, 255, ${alpha})`;
+            ctx.fill();
+          });
+
+          requestAnimationFrame(renderFrame);
         }
-        animateSparks();
+        renderFrame();
       }
 
-      // --- GSAP Timeline ---
+      // Emit sparks at the laser head
+      function emitSparks(x, y) {
+        const count = 3 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < count; i++) {
+          sparks.push({
+            x, y,
+            vx: (Math.random() - 0.5) * 4,
+            vy: (Math.random() - 0.8) * 3,
+            size: Math.random() * 1.5 + 0.5,
+            life: 1,
+            decay: 0.04 + Math.random() * 0.04,
+          });
+        }
+      }
+
+      // Emit coolant mist behind laser
+      function emitCoolant(x, y) {
+        for (let i = 0; i < 2; i++) {
+          coolantParticles.push({
+            x: x + (Math.random() - 0.5) * 10,
+            y: y + (Math.random() - 0.5) * 10,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: -(Math.random() * 0.5 + 0.2),
+            size: Math.random() * 3 + 2,
+            life: 1,
+            decay: 0.02 + Math.random() * 0.02,
+          });
+        }
+      }
+
+      // --- GSAP Master Timeline ---
       const tl = gsap.timeline({
         onComplete: () => {
-          sparksRunning = false;
+          animRunning = false;
           preloader.classList.add('dismiss');
           gsap.to(preloader, {
             opacity: 0,
             duration: 0.6,
             ease: 'power2.inOut',
-            onComplete: () => {
-              preloader.style.display = 'none';
-            }
+            onComplete: () => { preloader.style.display = 'none'; }
           });
         }
       });
 
-      // Stage 1: Sparks scatter (already running), wait a beat
-      tl.to({}, { duration: 0.6 });
+      // ===== STAGE 1: Machine Startup — laser line (0 – 0.5s) =====
+      tl.to(laserLine, {
+        opacity: 1,
+        width: '30vw',
+        duration: 0.25,
+        ease: 'power4.out',
+      });
+      // Pulse bright
+      tl.to(laserLine, {
+        boxShadow: '0 0 20px #D60600, 0 0 60px rgba(214,6,0,0.8), 0 0 100px rgba(214,6,0,0.4)',
+        duration: 0.1,
+        ease: 'power2.in',
+      });
+      // Dim to steady
+      tl.to(laserLine, {
+        boxShadow: '0 0 8px #D60600, 0 0 20px rgba(214,6,0,0.4), 0 0 40px rgba(214,6,0,0.15)',
+        opacity: 0.6,
+        duration: 0.15,
+        ease: 'power2.out',
+      });
 
-      // Stage 2: Logo fades in from behind sparks, blurred -> sharp, scale 0.95 -> 1.0
+      // ===== STAGE 2: Blueprint Grid Reveal (0.5 – 1.5s) =====
+      if (!isMobile && gridContainer) {
+        const gridLines = gridContainer.querySelectorAll('.grid-line');
+        const crosshairs = gridContainer.querySelectorAll('.grid-crosshair');
+
+        // Sort by distance from center for stagger
+        const sortedLines = Array.from(gridLines).sort((a, b) => a.dataset.dist - b.dataset.dist);
+        const sortedCrosshairs = Array.from(crosshairs).sort((a, b) => a.dataset.dist - b.dataset.dist);
+
+        tl.to(sortedLines, {
+          opacity: 0.5,
+          duration: 0.6,
+          stagger: 0.03,
+          ease: 'power2.out',
+        }, '+=0.0');
+
+        tl.to(sortedCrosshairs, {
+          opacity: 0.6,
+          duration: 0.3,
+          stagger: 0.02,
+          ease: 'power2.out',
+        }, '-=0.4');
+
+        // Coordinate readout
+        tl.to(coords, {
+          opacity: 1,
+          duration: 0.4,
+          stagger: 0.1,
+          ease: 'power2.out',
+        }, '-=0.3');
+
+        // Animate coordinate numbers counting
+        const coordObj = { x: 0, y: 0, z: 0 };
+        tl.to(coordObj, {
+          x: 125.000, y: 87.500, z: 0.000,
+          duration: 0.6,
+          ease: 'power2.out',
+          onUpdate: () => {
+            if (coords[0]) coords[0].textContent = 'X: ' + coordObj.x.toFixed(3);
+            if (coords[1]) coords[1].textContent = 'Y: ' + coordObj.y.toFixed(3);
+            if (coords[2]) coords[2].textContent = 'Z: ' + coordObj.z.toFixed(3);
+          },
+        }, '-=0.4');
+
+        // Fade laser startup line
+        tl.to(laserLine, { opacity: 0, duration: 0.3 }, '-=0.3');
+      } else {
+        tl.to(laserLine, { opacity: 0, duration: 0.3 });
+      }
+
+      // ===== STAGE 3: Laser Traces Logo Oval (1.5 – 3.0s) =====
+      const TRACE_DURATION = 1.5;
+      const traceObj = { t: 0 };
+      let lastTraceT = 0;
+
+      tl.to(traceObj, {
+        t: 1,
+        duration: TRACE_DURATION,
+        ease: 'power1.inOut',
+        onUpdate: () => {
+          laserProgress = traceObj.t;
+          // Add trail points
+          const steps = 3;
+          for (let i = 0; i < steps; i++) {
+            const interpT = lastTraceT + (traceObj.t - lastTraceT) * (i / steps);
+            laserTrail.push(getEllipsePoint(interpT));
+          }
+          laserTrail.push(getEllipsePoint(traceObj.t));
+
+          // Emit sparks + coolant at head
+          const head = getEllipsePoint(traceObj.t);
+          emitSparks(head.x, head.y);
+          emitCoolant(head.x, head.y);
+          lastTraceT = traceObj.t;
+        },
+        onComplete: () => {
+          // Close the loop
+          laserTrail.push(getEllipsePoint(0));
+          laserProgress = -1; // hide head
+        }
+      });
+
+      // ===== STAGE 4: Logo Materializes (3.0 – 3.8s) =====
       tl.to(logo, {
         opacity: 1,
         filter: 'blur(0px) brightness(1)',
         scale: 1,
-        duration: 1.2,
+        duration: 0.6,
         ease: 'power3.out',
-      });
+      }, '-=0.2');
 
-      // Stage 3: Metallic glow pulse
+      // 6-axis CNC presentation rotation
       tl.to(logo, {
-        filter: 'blur(0px) brightness(1.3) drop-shadow(0 0 30px rgba(214, 6, 0, 0.6))',
-        duration: 0.4,
-        ease: 'power2.in',
+        rotateY: 5,
+        duration: 0.2,
+        ease: 'power2.out',
       });
-
       tl.to(logo, {
-        filter: 'blur(0px) brightness(1) drop-shadow(0 0 15px rgba(214, 6, 0, 0.3))',
-        duration: 0.5,
+        rotateY: -3,
+        duration: 0.2,
+        ease: 'power2.inOut',
+      });
+      tl.to(logo, {
+        rotateY: 0,
+        duration: 0.3,
         ease: 'power2.out',
       });
 
-      // Stage 4: Light sweep across logo
+      // Fade grid behind
+      if (!isMobile && gridContainer) {
+        tl.to(gridContainer, {
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power2.inOut',
+        }, '-=0.6');
+
+        tl.to(coords, {
+          opacity: 0,
+          duration: 0.3,
+        }, '-=0.5');
+      }
+
+      // Fade the laser trail on canvas
+      tl.to({}, {
+        duration: 0.4,
+        onUpdate: function() {
+          // Gradually reduce trail opacity by clearing with low-alpha black
+          if (ctx) {
+            const progress = this.progress();
+            if (progress > 0.5) {
+              laserTrail = [];
+            }
+          }
+        }
+      }, '-=0.5');
+
+      // Metallic glow pulse
+      tl.to(logo, {
+        filter: 'blur(0px) brightness(1.3) drop-shadow(0 0 30px rgba(214, 6, 0, 0.5))',
+        duration: 0.3,
+        ease: 'power2.in',
+      }, '-=0.3');
+
+      tl.to(logo, {
+        filter: 'blur(0px) brightness(1) drop-shadow(0 0 15px rgba(214, 6, 0, 0.2))',
+        duration: 0.4,
+        ease: 'power2.out',
+      });
+
+      // Light sweep
       tl.to(sweep, {
         left: '140%',
-        duration: 0.8,
+        duration: 0.7,
         ease: 'power2.inOut',
-      }, '-=0.6');
+      }, '-=0.5');
 
-      // Stage 5: Text letter-by-letter reveal
+      // ===== STAGE 5: Company Name + Dismiss (3.8 – 4.5s) =====
       tl.to(textSpans, {
         opacity: 1,
         y: 0,
         duration: 0.4,
-        stagger: 0.03,
+        stagger: 0.025,
         ease: 'power3.out',
-      }, '-=0.3');
+      }, '-=0.2');
 
-      // Stage 6: Subtle pulse/shake on final reveal
-      tl.to(logo, {
-        scale: 1.03,
-        duration: 0.1,
-        ease: 'power4.in',
-      });
-      tl.to(logo, {
-        scale: 1,
-        duration: 0.3,
-        ease: 'elastic.out(1, 0.4)',
-      });
-
-      // Stage 7: Hold then fade out
-      tl.to({}, { duration: 0.8 });
+      // Hold
+      tl.to({}, { duration: 0.6 });
     }
   }
 

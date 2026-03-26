@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -24,6 +24,13 @@
   <!-- Preloader -->
   <div class="preloader">
     <div class="preloader__noise"></div>
+    <div class="preloader__laser-line"></div>
+    <div class="preloader__grid" aria-hidden="true"></div>
+    <div class="preloader__coords" aria-hidden="true">
+      <span class="coord coord-x">X: 0.000</span>
+      <span class="coord coord-y">Y: 0.000</span>
+      <span class="coord coord-z">Z: 0.000</span>
+    </div>
     <canvas class="preloader__sparks" id="sparkCanvas"></canvas>
     <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="Loading" class="preloader__logo">
     <div class="preloader__sweep"></div>
