@@ -7,12 +7,12 @@
 <style>
   @page {
     size: letter;
-    margin: 0.5in 0.6in 0.8in 0.6in;
+    margin: 0;
   }
 
   @media print {
     body { background: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .page { page-break-after: always; box-shadow: none; margin: 0; padding: 0.5in 0.6in; min-height: 9.5in; }
+    .page { page-break-after: always; box-shadow: none; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
     .page:last-child { page-break-after: avoid; }
     .no-print { display: none; }
   }
@@ -38,6 +38,7 @@
     flex-direction: column;
     overflow: hidden;
     page-break-after: always;
+    
   }
 
   /* ── Cover Page ── */
@@ -300,11 +301,14 @@
 
   /* ── Page Footer ── */
   .page-footer {
-    margin-top: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 0.5rem;
+    padding: 0.3rem 0.6in 0.4in 0.6in;
+    margin-top: auto;
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
   .page-num {
     font-size: 0.7rem;
