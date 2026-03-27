@@ -7,12 +7,12 @@
 <style>
   @page {
     size: letter;
-    margin: 0.5in;
+    margin: 0.5in 0.6in 0.8in 0.6in;
   }
 
   @media print {
     body { background: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .page { page-break-after: always; box-shadow: none; margin: 0; padding: 0.5in; height: auto; min-height: 9.5in; }
+    .page { page-break-after: always; box-shadow: none; margin: 0; padding: 0.5in 0.6in; min-height: 9.5in; }
     .page:last-child { page-break-after: avoid; }
     .no-print { display: none; }
   }
@@ -34,15 +34,14 @@
     margin: 0 auto 0.25in;
     padding: 0.6in;
     background: #ffffff;
-    position: relative;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     page-break-after: always;
   }
 
   /* ── Cover Page ── */
   .cover {
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -245,7 +244,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 9.5in;
+    flex: 1;
   }
   .final-grid {
     display: grid;
@@ -299,19 +298,20 @@
     border: 1px solid #1e293b;
   }
 
-  /* ── Utilities ── */
+  /* ── Page Footer ── */
+  .page-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.5rem;
+  }
   .page-num {
-    position: absolute;
-    bottom: 0.4in;
-    right: 0.6in;
     font-size: 0.7rem;
     color: #334155;
     letter-spacing: 0.1em;
   }
   .page-logo {
-    position: absolute;
-    bottom: 0.4in;
-    left: 0.6in;
     height: 24px;
     opacity: 0.3;
   }
@@ -320,6 +320,20 @@
     top: 0; left: 0; right: 0;
     height: 3px;
     background: linear-gradient(90deg, #D60600, transparent 60%);
+  }
+
+  /* ── Machine Images ── */
+  .machine-img {
+    display: block;
+    max-width: 60%;
+    margin: 16px auto;
+    border-radius: 8px;
+  }
+  .machine-img-sm {
+    display: block;
+    max-width: 40%;
+    margin: 10px auto;
+    border-radius: 8px;
   }
 </style>
 </head>
@@ -372,8 +386,10 @@
     <div class="item">Email: <span>rc@cncprecision.com</span></div>
     <div class="item">Web: <span>www.cncprecision.com</span></div>
   </div>
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">02</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">02</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 3: TORNOS ═══════════════════ -->
@@ -383,6 +399,7 @@
     <h2>Tornos</h2>
     <div class="subtitle">Soluciones de Torneado CNC y Tipo Suizo</div>
   </div>
+  <img src="assets/brochure-images/img-007.png" alt="Republic Lathe" class="machine-img">
   <div class="product-grid">
     <div class="product-card">
       <div class="brand">Hanwha</div>
@@ -410,8 +427,10 @@
       <p>Tornos CNC de alta velocidad y alta precisi&oacute;n de Jap&oacute;n. Dise&ntilde;o compacto con automatizaci&oacute;n lista para manufactura desatendida.</p>
     </div>
   </div>
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">03</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">03</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 4: FRESADORAS + RECTIFICADORAS ═══════════════════ -->
@@ -421,6 +440,7 @@
     <h2>Fresadoras</h2>
     <div class="subtitle">Centros de Maquinado Verticales, Horizontales y CNC</div>
   </div>
+  <img src="assets/images/Sharp-Machining-Ctr-Model-SVL-4.jpg" alt="Sharp Machining Center" class="machine-img-sm">
   <div class="product-grid">
     <div class="product-card">
       <div class="brand">Sharp Machinery</div>
@@ -444,6 +464,7 @@
       <h2>Rectificadoras</h2>
       <div class="subtitle">Rectificado de Superficies, Cil&iacute;ndrico y CNC</div>
     </div>
+    <img src="assets/brochure-images/img-016.png" alt="Chevalier Surface Grinder" class="machine-img-sm">
     <div class="product-grid">
       <div class="product-card">
         <div class="brand">Supertec</div>
@@ -467,8 +488,10 @@
       </div>
     </div>
   </div>
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">04</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">04</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 5: MÁQUINAS EDM ═══════════════════ -->
@@ -478,6 +501,7 @@
     <h2>M&aacute;quinas EDM</h2>
     <div class="subtitle">EDM de Hilo, Penetraci&oacute;n y Perforaci&oacute;n</div>
   </div>
+  <img src="assets/images/Sodick-ALN400g-4.jpg" alt="Sodick EDM" class="machine-img">
   <div class="product-grid">
     <div class="product-card">
       <div class="brand">Sodick</div>
@@ -510,8 +534,10 @@
       <p>Herramental y sistemas de automatizaci&oacute;n de ingenier&iacute;a suiza para EDM. Cambiadores de electrodos, paletizaci&oacute;n y soluciones de manufactura flexible.</p>
     </div>
   </div>
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">05</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">05</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 6: IMPRESORA 3D DE METAL + HERRAMIENTAS ═══════════════════ -->
@@ -567,8 +593,10 @@
       </div>
     </div>
   </div>
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">06</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">06</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 7: TALADROS + HORNOS + SIERRAS + SOLDADORAS ═══════════════════ -->
@@ -591,6 +619,7 @@
 
   <div class="category-block">
     <h3>Hornos de Tratamiento T&eacute;rmico</h3>
+    <img src="assets/brochure-images/img-053.png" alt="Cress Furnace" class="machine-img-sm">
     <div class="product-list">
       <div class="product-item">
         <h4>Cress Heat Treat Furnaces</h4>
@@ -619,6 +648,7 @@
 
   <div class="category-block">
     <h3>Soldadoras</h3>
+    <img src="assets/brochure-images/img-060.png" alt="Miller Welder" class="machine-img-sm">
     <div class="product-list">
       <div class="product-item">
         <h4>LaserStar Welders &amp; Marker</h4>
@@ -631,8 +661,10 @@
     </div>
   </div>
 
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">07</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">07</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 8: LÁSER, PLASMA Y ROUTERS + ALMACENAMIENTO + SOFTWARE ═══════════════════ -->
@@ -641,6 +673,7 @@
 
   <div class="category-block">
     <h3>L&aacute;ser, Plasma y Routers</h3>
+    <img src="assets/images/LaserStar-7700-Welding-4.jpg" alt="LaserStar System" class="machine-img-sm">
     <div class="product-list">
       <div class="product-item">
         <h4>Fast Cut CNC Plasma</h4>
@@ -689,8 +722,10 @@
     </div>
   </div>
 
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">08</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">08</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 9: TRANSFERENCIAS ROTATIVAS, MULTI-EJES, CHORROS DE AGUA, CONTROL DE CALIDAD ═══════════════════ -->
@@ -723,6 +758,7 @@
 
   <div class="category-block">
     <h3>Chorros de Agua</h3>
+    <img src="assets/brochure-images/img-072.png" alt="OMAX Waterjet" class="machine-img-sm">
     <div class="product-list single-col">
       <div class="product-item">
         <h4>OMAX Corporation</h4>
@@ -733,6 +769,7 @@
 
   <div class="category-block">
     <h3>Control de Calidad y Metrolog&iacute;a</h3>
+    <img src="assets/brochure-images/img-086.png" alt="Helmel CMM" class="machine-img-sm">
     <div class="product-list">
       <div class="product-item">
         <h4>Fowler Precision</h4>
@@ -745,8 +782,10 @@
     </div>
   </div>
 
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">09</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">09</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 10: ALIMENTADORES DE BARRA + REPARACIÓN + SERVICIO ═══════════════════ -->
@@ -794,8 +833,10 @@
     </p>
   </div>
 
-  <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
-  <div class="page-num">10</div>
+  <div class="page-footer">
+    <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="" class="page-logo">
+    <div class="page-num">10</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ PAGE 11: CONTACTO Y FINANCIAMIENTO ═══════════════════ -->
