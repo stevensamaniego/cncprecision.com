@@ -7,164 +7,318 @@
 <style>
   @page {
     size: letter;
-    margin: 0.6in 0.7in 0.9in 0.7in;
+    margin: 0.5in 0.6in 0.8in 0.6in;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-    color: #222;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #1a2a3a;
     background: #fff;
     font-size: 11pt;
-    line-height: 1.5;
+    line-height: 1.55;
     orphans: 3;
     widows: 3;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   h1, h2, h3 { break-after: avoid; }
 
+  /* ===== COVER ===== */
   .cover {
     text-align: center;
-    padding-top: 2.2in;
+    padding-top: 1.8in;
     break-after: page;
   }
   .cover img.logo {
-    max-width: 350px;
-    margin-bottom: 28px;
+    max-width: 380px;
+    margin-bottom: 30px;
   }
   .cover h1 {
-    font-size: 26pt;
+    font-size: 28pt;
     font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 14px;
-    color: #222;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: #1a2a3a;
   }
   .cover .divider {
-    width: 120px;
-    height: 3px;
+    width: 160px;
+    height: 4px;
     background: #D60600;
-    margin: 0 auto 14px;
+    margin: 0 auto 16px;
   }
   .cover .tagline {
-    font-size: 15pt;
+    font-size: 16pt;
     color: #D60600;
-    font-weight: 600;
-    margin-bottom: 18px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
   }
   .cover .location {
-    font-size: 11pt;
-    color: #555;
+    font-size: 12pt;
+    color: #4a5568;
     margin-bottom: 6px;
+    font-weight: 500;
   }
   .cover .est {
     font-size: 11pt;
-    color: #888;
+    color: #718096;
     font-style: italic;
+    margin-top: 8px;
+  }
+  .cover .contact-line {
+    margin-top: 28px;
+    font-size: 10pt;
+    color: #4a5568;
+    letter-spacing: 0.5px;
+  }
+  .cover .contact-line a {
+    color: #D60600;
+    text-decoration: none;
+    font-weight: 600;
   }
 
+  /* ===== ABOUT ===== */
   .about {
     break-after: page;
   }
   .about h2 {
-    font-size: 18pt;
+    font-size: 20pt;
+    font-weight: 800;
     color: #D60600;
-    margin-bottom: 12px;
-    border-bottom: 2px solid #D60600;
-    padding-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .about .rule {
+    width: 100%;
+    height: 3px;
+    background: #D60600;
+    margin-bottom: 18px;
   }
   .about p {
     margin-bottom: 14px;
     text-align: justify;
+    font-size: 11pt;
+    line-height: 1.65;
+  }
+  .about .highlights {
+    margin: 18px 0;
+    padding: 16px 20px;
+    background: #f7f8fa;
+    border-left: 4px solid #D60600;
+    border-radius: 0 6px 6px 0;
+    break-inside: avoid;
+  }
+  .about .highlights h3 {
+    font-size: 13pt;
+    color: #D60600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .about .highlights ul {
+    list-style: none;
+    padding: 0;
+  }
+  .about .highlights ul li {
+    font-size: 10.5pt;
+    padding: 3px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .about .highlights ul li::before {
+    content: "\25A0";
+    color: #D60600;
+    position: absolute;
+    left: 0;
+    font-size: 8pt;
+    top: 4px;
+  }
+  .about .service-areas {
+    margin: 18px 0;
+    break-inside: avoid;
+  }
+  .about .service-areas h3 {
+    font-size: 13pt;
+    color: #D60600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .about .service-areas .area-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 30px;
+  }
+  .about .service-areas .area-grid span {
+    font-size: 10.5pt;
+    padding-left: 16px;
+    position: relative;
+  }
+  .about .service-areas .area-grid span::before {
+    content: "\25B8";
+    color: #D60600;
+    position: absolute;
+    left: 0;
   }
   .contact-bar {
-    margin-top: 20px;
-    padding: 14px 18px;
-    background: #f8f8f8;
-    border: 1px solid #e0e0e0;
+    margin-top: 22px;
+    padding: 16px 20px;
+    background: #1a2a3a;
     border-radius: 6px;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 8px;
+    break-inside: avoid;
   }
   .contact-bar span {
     font-size: 10pt;
-    color: #333;
+    color: #fff;
   }
   .contact-bar strong {
     color: #D60600;
   }
 
-  .category h2 {
-    font-size: 16pt;
-    color: #D60600;
-    margin-top: 22px;
-    margin-bottom: 8px;
-    border-bottom: 2px solid #D60600;
-    padding-bottom: 3px;
+  /* ===== CATEGORY SECTIONS ===== */
+  .category {
+    margin-top: 28px;
+  }
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
     break-after: avoid;
   }
+  .category-header img.cat-logo {
+    height: 32px;
+    width: auto;
+  }
+  .category-header h2 {
+    font-size: 16pt;
+    font-weight: 800;
+    color: #D60600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 0;
+  }
+  .category .rule {
+    width: 100%;
+    height: 2.5px;
+    background: #D60600;
+    margin-bottom: 14px;
+  }
+
+  .product-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 14px;
+  }
+  .product-list li {
+    break-inside: avoid;
+    margin-bottom: 4px;
+    font-size: 10.5pt;
+    padding: 4px 0 4px 14px;
+    border-left: 3px solid #D60600;
+    margin-left: 4px;
+    line-height: 1.4;
+  }
+
   .category-img {
     display: block;
     max-width: 55%;
     margin: 16px auto;
-    border-radius: 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
   }
-  .product-list {
-    list-style: disc;
-    padding-left: 22px;
-    margin-bottom: 10px;
-  }
-  .product-list li {
+
+  .brand-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px 40px;
+    margin: 20px auto;
+    max-width: 500px;
     break-inside: avoid;
-    margin-bottom: 3px;
-    font-size: 10.5pt;
+  }
+  .brand-logos img {
+    max-width: 160px;
+    max-height: 70px;
+    object-fit: contain;
   }
 
-  .group-divider {
-    margin-top: 28px;
+  /* Group spacing */
+  .group-start {
+    margin-top: 36px;
   }
 
+  /* ===== CONTACT / FINANCING ===== */
   .contact-section {
-    margin-top: 30px;
+    margin-top: 36px;
   }
   .contact-section h2 {
-    font-size: 18pt;
+    font-size: 20pt;
+    font-weight: 800;
     color: #D60600;
-    margin-bottom: 12px;
-    border-bottom: 2px solid #D60600;
-    padding-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
     break-after: avoid;
+  }
+  .contact-section .rule {
+    width: 100%;
+    height: 3px;
+    background: #D60600;
+    margin-bottom: 18px;
   }
   .contact-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 30px;
-    margin-bottom: 18px;
+    gap: 12px 30px;
+    margin-bottom: 22px;
   }
   .contact-grid .item {
-    font-size: 10.5pt;
+    font-size: 11pt;
     break-inside: avoid;
+    padding: 6px 0;
+    border-bottom: 1px solid #e8ecf0;
   }
   .contact-grid .item strong {
     color: #D60600;
+    display: block;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
   }
   .financing {
-    padding: 14px 18px;
-    background: #f8f8f8;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    padding: 18px 22px;
+    background: #f7f8fa;
+    border-left: 4px solid #D60600;
+    border-radius: 0 6px 6px 0;
     break-inside: avoid;
+    margin-top: 10px;
   }
   .financing h3 {
     color: #D60600;
-    font-size: 13pt;
-    margin-bottom: 4px;
+    font-size: 14pt;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   .financing p {
     font-size: 10.5pt;
+    line-height: 1.55;
   }
+
+  /* Utility: page break */
+  .page-break { break-before: page; }
 </style>
 </head>
 <body>
@@ -172,32 +326,64 @@
 <!-- ==================== PORTADA ==================== -->
 <div class="cover">
   <img src="CNC-3D-LOGO-NEW.png" alt="CNC Precision Machines Logo" class="logo">
-  <h1>CNC PRECISION MACHINES INTL. LLC</h1>
+  <h1>CNC Precision Machines Intl. LLC</h1>
   <div class="divider"></div>
   <div class="tagline">Venta y Servicio de Máquinas Herramienta</div>
-  <div class="location">El Paso, Texas &nbsp;|&nbsp; Cd. Juárez, Chihuahua, MX</div>
+  <div class="location">El Paso, Texas &nbsp;&bull;&nbsp; Cd. Juárez, Chihuahua, MX</div>
   <div class="est">Est. 2000</div>
+  <div class="contact-line">
+    (915) 778-0108 &nbsp;|&nbsp; <a>rc@cncprecision.com</a> &nbsp;|&nbsp; <a>www.cncprecision.com</a>
+  </div>
 </div>
 
-<!-- ==================== ACERCA DE ==================== -->
+<!-- ==================== ACERCA DE NOSOTROS ==================== -->
 <div class="about">
-  <h2>Acerca de Nosotros</h2>
+  <h2>Acerca de CNC Precision Machines</h2>
+  <div class="rule"></div>
+
   <p>
-    CNC Precision Machines International, LLC ha servido a la industria manufacturera por más de 25 años
-    desde nuestra ubicación estratégica en la frontera entre Estados Unidos y México. Nos especializamos
-    en la venta, servicio y soporte de máquinas herramienta para los sectores maquilador y manufacturero
-    en todo el suroeste de Estados Unidos y el norte de México.
+    CNC Precision Machines International, LLC ha servido con orgullo a la industria manufacturera por más de
+    <strong>25 años</strong> desde nuestra ubicación estratégica en la frontera entre Estados Unidos y México.
+    Nos especializamos en la venta, servicio y soporte de máquinas herramienta para los sectores maquilador
+    y manufacturero en todo el suroeste de Estados Unidos y el norte de México.
   </p>
   <p>
-    Nuestro equipo bilingüe brinda consultoría experta, instalación, capacitación y soporte postventa.
-    Representamos marcas de máquinas herramienta de primer nivel y ofrecemos soluciones integrales — desde
-    tornos CNC y centros de maquinado hasta EDM, rectificado, sistemas láser, equipos de control de
-    calidad y más.
+    Nuestro equipo completamente bilingüe brinda consultoría experta, instalación, capacitación de operadores,
+    programas de mantenimiento preventivo y soporte postventa responsivo. Representamos las mejores marcas de
+    máquinas herramienta de la industria y ofrecemos soluciones integrales llave en mano — desde tornos CNC y
+    centros de maquinado hasta EDM, rectificado, sistemas láser, equipos de control de calidad y mucho más.
   </p>
   <p>
-    Ya sea que esté equipando una nueva instalación o actualizando su línea de producción existente,
-    CNC Precision Machines es su socio de confianza en precisión, confiabilidad y valor.
+    Ya sea que esté equipando una nueva instalación, actualizando su línea de producción existente o buscando
+    refacciones y herramental, CNC Precision Machines es su socio de confianza en precisión, confiabilidad y valor.
   </p>
+
+  <div class="highlights">
+    <h3>¿Por Qué Elegirnos?</h3>
+    <ul>
+      <li>Más de 25 años de experiencia y conocimiento en la industria</li>
+      <li>Equipo de ventas y soporte técnico completamente bilingüe (inglés y español)</li>
+      <li>Ubicación estratégica en la frontera EE.UU.-México para servicio transfronterizo</li>
+      <li>Distribuidor autorizado de más de 50 marcas líderes de máquinas herramienta</li>
+      <li>Soluciones integrales: ventas, instalación, capacitación y soporte</li>
+      <li>Opciones de financiamiento disponibles — Se aceptan Visa, MasterCard y American Express</li>
+    </ul>
+  </div>
+
+  <div class="service-areas">
+    <h3>Áreas de Servicio</h3>
+    <div class="area-grid">
+      <span>Condado de El Paso, Texas</span>
+      <span>Sur de Nuevo México</span>
+      <span>Chihuahua, México</span>
+      <span>Sonora, México</span>
+      <span>Coahuila, México</span>
+      <span>Durango, México</span>
+      <span>Nuevo León, México</span>
+      <span>Suroeste de Estados Unidos</span>
+    </div>
+  </div>
+
   <div class="contact-bar">
     <span><strong>Teléfono:</strong> (915) 778-0108</span>
     <span><strong>Correo:</strong> rc@cncprecision.com</span>
@@ -205,10 +391,12 @@
   </div>
 </div>
 
-<!-- ==================== TORNOS (sección propia) ==================== -->
+<!-- ==================== TORNOS ==================== -->
 <div class="category">
-  <h2>Tornos</h2>
-  <img src="assets/brochure-images/img-007.png" alt="Torno Republic" class="category-img">
+  <div class="category-header">
+    <h2>Tornos</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Hanwha Swiss</li>
     <li>Republic-Lagun CNC</li>
@@ -216,46 +404,78 @@
     <li>ProtoTRAK CNC</li>
     <li>TAKAMAZ CNC Precision Lathes</li>
   </ul>
+  <img src="assets/brochure-images/img-007.png" alt="Torno CNC" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-001.png" alt="Republic Lagun">
+    <img src="assets/brochure-images/img-031.png" alt="Sharp">
+    <img src="assets/brochure-images/img-002.png" alt="ProtoTRAK">
+  </div>
 </div>
 
-<!-- ==================== FRESADORAS (sección propia) ==================== -->
+<!-- ==================== FRESADORAS ==================== -->
 <div class="category">
-  <h2>Fresadoras</h2>
-  <img src="assets/images/Sharp-Machining-Ctr-Model-SVL-4.jpg" alt="Centro de Maquinado Sharp" class="category-img">
+  <div class="category-header">
+    <h2>Fresadoras</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Sharp Machinery</li>
     <li>Chevalier Machinery</li>
     <li>ProtoTRAK CNC Mills</li>
   </ul>
+  <img src="assets/images/Sharp-Machining-Ctr-Model-SVL-4.jpg" alt="Centro de Maquinado Sharp" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-031.png" alt="Sharp">
+    <img src="assets/brochure-images/img-018.png" alt="Chevalier">
+    <img src="assets/brochure-images/img-002.png" alt="ProtoTRAK">
+  </div>
 </div>
 
-<!-- ==================== RECTIFICADORAS (sección propia) ==================== -->
+<!-- ==================== RECTIFICADORAS ==================== -->
 <div class="category">
-  <h2>Rectificadoras</h2>
-  <img src="assets/brochure-images/img-016.png" alt="Rectificadora Chevalier" class="category-img">
+  <div class="category-header">
+    <h2>Rectificadoras</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Supertec Cylinder Grinders</li>
     <li>Chevalier Surface/CNC Grinders</li>
     <li>Mitsui Precision Surface Grinders</li>
     <li>Weldon CNC Cylindrical Grinders</li>
   </ul>
+  <img src="assets/brochure-images/img-016.png" alt="Rectificadora Chevalier" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-018.png" alt="Chevalier">
+    <img src="assets/brochure-images/img-022.png" alt="Royal Master">
+    <img src="assets/brochure-images/img-046.png" alt="Sharp">
+  </div>
 </div>
 
-<!-- ==================== EDM (sección propia) ==================== -->
+<!-- ==================== EDM ==================== -->
 <div class="category">
-  <h2>Máquinas EDM</h2>
-  <img src="assets/images/Sodick-ALN400g-4.jpg" alt="Sodick EDM" class="category-img">
+  <div class="category-header">
+    <h2>Máquinas EDM</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Sodick CNC Wire/Sinker EDM &amp; Hole Drilling</li>
     <li>Gromax ZNC Sinker EDM &amp; Micro Drillers</li>
     <li>Systems 3R EDM Tooling</li>
     <li>Erowa EDM Tooling</li>
   </ul>
+  <img src="assets/images/Sodick-ALN400g-4.jpg" alt="Sodick EDM" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-026.png" alt="Sodick">
+    <img src="assets/brochure-images/img-043.png" alt="Gromax">
+  </div>
 </div>
 
 <!-- ==================== IMPRESORA 3D DE METAL ==================== -->
 <div class="category">
-  <h2>Impresora 3D de Metal</h2>
+  <div class="category-header">
+    <h2>Impresora 3D de Metal</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Sodick Metal 3D Printer with Machining Center</li>
   </ul>
@@ -263,7 +483,10 @@
 
 <!-- ==================== HERRAMIENTAS ==================== -->
 <div class="category">
-  <h2>Herramientas</h2>
+  <div class="category-header">
+    <h2>Herramientas y Sujeción</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>ATS Quick Changes Collets/Chucks</li>
     <li>Burnerd 3 &amp; 4 Jaw Chucks</li>
@@ -272,108 +495,177 @@
     <li>Kennametal Tooling</li>
     <li>Kurt Work Hold</li>
   </ul>
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-043.png" alt="Gromax">
+    <img src="assets/brochure-images/img-045.png" alt="Lyndex-Nikken">
+    <img src="assets/brochure-images/img-092.png" alt="Micro 100">
+  </div>
 </div>
 
-<!-- ==================== GRUPO: Taladros + Hornos + Sierras ==================== -->
-<div class="category group-divider">
-  <h2>Taladros</h2>
+<!-- ==================== TALADROS ==================== -->
+<div class="category">
+  <div class="category-header">
+    <h2>Taladros</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Sharp Radial Drill</li>
     <li>Clausing</li>
   </ul>
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-046.png" alt="Sharp">
+    <img src="assets/brochure-images/img-047.png" alt="Clausing">
+  </div>
 </div>
 
+<!-- ==================== HORNOS DE TRATAMIENTO TÉRMICO ==================== -->
 <div class="category">
-  <h2>Hornos de Tratamiento Térmico</h2>
-  <img src="assets/brochure-images/img-053.png" alt="Horno Cress" class="category-img">
+  <div class="category-header">
+    <h2>Hornos de Tratamiento Térmico</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Cress Heat Treat Furnaces</li>
     <li>Lucifer Furnaces Inc.</li>
   </ul>
+  <img src="assets/brochure-images/img-053.png" alt="Horno Cress" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-052.png" alt="Cress">
+  </div>
 </div>
 
+<!-- ==================== SIERRAS ==================== -->
 <div class="category">
-  <h2>Sierras</h2>
+  <div class="category-header">
+    <h2>Sierras</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>DoAll Production Saws</li>
     <li>Wellsaw Band Saw</li>
   </ul>
 </div>
 
-<!-- ==================== GRUPO: Soldadoras + Láser/Plasma ==================== -->
-<div class="category group-divider">
-  <h2>Soldadoras</h2>
-  <img src="assets/brochure-images/img-060.png" alt="Soldadora Miller" class="category-img">
+<!-- ==================== SOLDADORAS ==================== -->
+<div class="category">
+  <div class="category-header">
+    <h2>Soldadoras</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>LaserStar Welders &amp; Marker</li>
-    <li>Nova Tech Micro TIG Welding Systems</li>
+    <li>Nova Tech Micro TIG Welding</li>
   </ul>
+  <img src="assets/brochure-images/img-060.png" alt="Soldadora" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-062.png" alt="Miller">
+    <img src="assets/brochure-images/img-064.png" alt="LaserStar">
+    <img src="assets/brochure-images/img-066.png" alt="Han's Laser">
+  </div>
 </div>
 
-<div class="category" style="break-inside:avoid">
-  <h2>Láser, Plasma y Routers</h2>
-  <img src="assets/images/LaserStar-7700-Welding-4.jpg" alt="LaserStar Láser" class="category-img">
+<!-- ==================== LÁSER/PLASMA/ROUTERS ==================== -->
+<div class="category">
+  <div class="category-header">
+    <h2>Láser, Plasma y Routers</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Fast Cut CNC Plasma</li>
     <li>Kern Lasers Systems</li>
     <li>Laguna Multi-Access</li>
   </ul>
+  <img src="assets/images/LaserStar-7700-Welding-4.jpg" alt="Sistema LaserStar" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-064.png" alt="LaserStar">
+  </div>
 </div>
 
-<!-- ==================== GRUPO: Almacenamiento + Software ==================== -->
-<div class="category group-divider">
-  <h2>Almacenamiento</h2>
+<!-- ==================== ALMACENAMIENTO ==================== -->
+<div class="category">
+  <div class="category-header">
+    <h2>Almacenamiento</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>International Lista</li>
     <li>Sarraile Removable Mold Storage Racks</li>
   </ul>
 </div>
 
+<!-- ==================== SOFTWARE ==================== -->
 <div class="category">
-  <h2>Software</h2>
+  <div class="category-header">
+    <h2>Software</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
-    <li>ProtoTRAK 3 Axis CNC Control Systems</li>
+    <li>ProtoTRAK 3 Axis CNC Control</li>
     <li>ESPRIT/DP Technology</li>
     <li>FeatureCAM</li>
   </ul>
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-075.png" alt="FeatureCAM">
+  </div>
 </div>
 
-<!-- ==================== GRUPO: Transferencias Rotativas + Multi-Ejes + Corte por Agua ==================== -->
-<div class="category group-divider">
-  <h2>Transferencias Rotativas</h2>
+<!-- ==================== TRANSFERENCIAS ROTATIVAS ==================== -->
+<div class="category">
+  <div class="category-header">
+    <h2>Transferencias Rotativas</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>WINEMA Transfer Machines</li>
   </ul>
 </div>
 
+<!-- ==================== MULTI-EJES ==================== -->
 <div class="category">
-  <h2>Multi-Ejes</h2>
+  <div class="category-header">
+    <h2>Multi-Ejes</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Hanwha</li>
     <li>Chevalier 5 Axes</li>
   </ul>
 </div>
 
+<!-- ==================== CORTE POR AGUA ==================== -->
 <div class="category">
-  <h2>Corte por Agua</h2>
-  <img src="assets/brochure-images/img-072.png" alt="OMAX Corte por Agua" class="category-img">
+  <div class="category-header">
+    <h2>Corte por Agua</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>OMAX Corporation</li>
   </ul>
+  <img src="assets/brochure-images/img-072.png" alt="OMAX Corte por Agua" class="category-img">
 </div>
 
-<!-- ==================== GRUPO: Control de Calidad + Alimentadores de Barra ==================== -->
-<div class="category group-divider">
-  <h2>Control de Calidad</h2>
-  <img src="assets/brochure-images/img-086.png" alt="Helmel CMM" class="category-img">
+<!-- ==================== CONTROL DE CALIDAD ==================== -->
+<div class="category">
+  <div class="category-header">
+    <h2>Control de Calidad</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Fowler Precision</li>
     <li>FARO</li>
   </ul>
+  <img src="assets/brochure-images/img-086.png" alt="Helmel CMM" class="category-img">
+  <div class="brand-logos">
+    <img src="assets/brochure-images/img-086.png" alt="Helmel CMM">
+  </div>
 </div>
 
+<!-- ==================== ALIMENTADORES DE BARRA ==================== -->
 <div class="category">
-  <h2>Alimentadores de Barra y Accesorios</h2>
+  <div class="category-header">
+    <h2>Alimentadores de Barra y Accesorios</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>EDGE Technologies</li>
     <li>LNS Bar Feed Systems</li>
@@ -381,9 +673,12 @@
   </ul>
 </div>
 
-<!-- ==================== Reparación/Reemplazo ==================== -->
+<!-- ==================== REPARACIÓN ==================== -->
 <div class="category">
-  <h2>Reparación/Reemplazo de Tarjetas de Circuito</h2>
+  <div class="category-header">
+    <h2>Reparación/Reemplazo de Tarjetas de Circuito</h2>
+  </div>
+  <div class="rule"></div>
   <ul class="product-list">
     <li>Fanuc USA</li>
     <li>Yaskawa Electric America</li>
@@ -391,19 +686,44 @@
 </div>
 
 <!-- ==================== CONTACTO / FINANCIAMIENTO ==================== -->
-<div class="contact-section">
+<div class="contact-section page-break">
   <h2>Contáctenos</h2>
+  <div class="rule"></div>
   <div class="contact-grid">
-    <div class="item"><strong>Teléfono:</strong> (915) 778-0108</div>
-    <div class="item"><strong>Fax:</strong> (915) 778-0102</div>
-    <div class="item"><strong>México:</strong> 01 (656) 618-00-88</div>
-    <div class="item"><strong>Correo:</strong> rc@cncprecision.com</div>
-    <div class="item"><strong>Web:</strong> www.cncprecision.com</div>
-    <div class="item"><strong>Dirección:</strong> P.O. Box 971938, El Paso, TX 79997-1938</div>
+    <div class="item">
+      <strong>Teléfono</strong>
+      (915) 778-0108
+    </div>
+    <div class="item">
+      <strong>Fax</strong>
+      (915) 778-0102
+    </div>
+    <div class="item">
+      <strong>México</strong>
+      01 (656) 618-00-88
+    </div>
+    <div class="item">
+      <strong>Correo Electrónico</strong>
+      rc@cncprecision.com
+    </div>
+    <div class="item">
+      <strong>Sitio Web</strong>
+      www.cncprecision.com
+    </div>
+    <div class="item">
+      <strong>Dirección EE.UU.</strong>
+      P.O. Box 971938, El Paso, TX 79997-1938
+    </div>
   </div>
+
   <div class="financing">
     <h3>Financiamiento Disponible</h3>
-    <p>Aceptamos Visa, MasterCard y American Express. Pregunte por nuestras opciones de financiamiento para compras que califiquen.</p>
+    <p>
+      Ofrecemos opciones flexibles de financiamiento para compras que califiquen, para ayudarle a invertir
+      en el equipo adecuado para su operación. Aceptamos con orgullo <strong>Visa</strong>,
+      <strong>MasterCard</strong> y <strong>American Express</strong>. Contacte a nuestro equipo de ventas
+      para discutir planes de pago y opciones de arrendamiento adaptadas a sus necesidades.
+    </p>
   </div>
 </div>
 
