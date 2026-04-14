@@ -859,13 +859,11 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   width: auto;
   max-width: 140px;
   object-fit: contain;
-  filter: grayscale(100%) brightness(0.7);
-  opacity: 0.5;
-  transition: filter 0.4s ease, opacity 0.4s ease;
+  opacity: 0.85;
+  transition: opacity 0.4s ease;
 }
 
 .partner-logo:hover img {
-  filter: grayscale(0%) brightness(1);
   opacity: 1;
 }
 
@@ -1319,13 +1317,11 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   height: 45px;
   max-width: 120px;
   object-fit: contain;
-  filter: grayscale(100%) brightness(0.7);
-  opacity: 0.6;
-  transition: filter 0.4s, opacity 0.4s;
+  opacity: 0.85;
+  transition: opacity 0.4s;
 }
 
 .partners-grid .partner-logo:hover img {
-  filter: none;
   opacity: 1;
 }
 
@@ -1628,13 +1624,11 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   color: var(--muted);
   text-transform: uppercase;
   white-space: nowrap;
-  filter: grayscale(100%) brightness(0.7);
-  opacity: 0.5;
-  transition: filter 0.4s ease, opacity 0.4s ease, color 0.4s ease;
+  opacity: 0.85;
+  transition: opacity 0.4s ease, color 0.4s ease;
 }
 
 .partner-logo:hover .partner-logo__text {
-  filter: none;
   opacity: 1;
   color: var(--white);
 }
