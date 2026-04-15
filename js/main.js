@@ -71,20 +71,180 @@ document.addEventListener('DOMContentLoaded', () => {
       let coolantParticles = [];
       let ctx;
 
-      // Ellipse parameters (match logo proportions)
+      // Canvas dims
       const W = window.innerWidth;
       const H = window.innerHeight;
-      const ellipseRx = Math.min(W * 0.22, 200);
-      const ellipseRy = Math.min(H * 0.14, 130);
-      const ellipseCx = W / 2;
-      const ellipseCy = H / 2 - 40;
 
-      function getEllipsePoint(t) {
-        const angle = t * Math.PI * 2 - Math.PI / 2; // start at top
-        return {
-          x: ellipseCx + Math.cos(angle) * ellipseRx,
-          y: ellipseCy + Math.sin(angle) * ellipseRy,
-        };
+      // --- Build logo contour from image alpha silhouette ---
+      // Falls back to a tight rounded-rect around the logo bounding box.
+      let contourPts = [];
+      let contourLen = 0;
+      let contourCumLen = [];
+
+      function finalizeContour() {
+        contourCumLen = [0];
+        let total = 0;
+        for (let i = 1; i < contourPts.length; i++) {
+          const dx = contourPts[i].x - contourPts[i - 1].x;
+          const dy = contourPts[i].y - contourPts[i - 1].y;
+          total += Math.sqrt(dx * dx + dy * dy);
+          contourCumLen.push(total);
+        }
+        // Close the loop
+        const dx = contourPts[0].x - contourPts[contourPts.length - 1].x;
+        const dy = contourPts[0].y - contourPts[contourPts.length - 1].y;
+        total += Math.sqrt(dx * dx + dy * dy);
+        contourCumLen.push(total);
+        contourLen = total;
+      }
+
+      function buildLogoContour() {
+        if (!logo || !logo.complete || !logo.naturalWidth) return false;
+        try {
+          const rect = logo.getBoundingClientRect();
+          const boxW = rect.width;
+          const boxH = rect.height;
+          if (boxW < 4 || boxH < 4) return false;
+
+          // object-fit: contain — compute actual displayed image rect within the box
+          const natW = logo.naturalWidth;
+          const natH = logo.naturalHeight;
+          const scale = Math.min(boxW / natW, boxH / natH);
+          const dispW = natW * scale;
+          const dispH = natH * scale;
+          const offsetX = rect.left + (boxW - dispW) / 2;
+          const offsetY = rect.top + (boxH - dispH) / 2;
+
+          // Sample at moderate resolution of the displayed image
+          const sampleW = Math.min(240, Math.max(60, Math.floor(dispW)));
+          const sampleH = Math.min(180, Math.max(40, Math.floor(dispH)));
+          const off = document.createElement('canvas');
+          off.width = sampleW;
+          off.height = sampleH;
+          const octx = off.getContext('2d');
+          octx.drawImage(logo, 0, 0, sampleW, sampleH);
+          let data;
+          try { data = octx.getImageData(0, 0, sampleW, sampleH).data; }
+          catch (e) { return false; } // CORS-tainted
+
+          const top = new Array(sampleW).fill(-1);
+          const bot = new Array(sampleW).fill(-1);
+          const ALPHA_T = 30;
+          for (let x = 0; x < sampleW; x++) {
+            for (let y = 0; y < sampleH; y++) {
+              const a = data[(y * sampleW + x) * 4 + 3];
+              if (a > ALPHA_T) {
+                if (top[x] === -1) top[x] = y;
+                bot[x] = y;
+              }
+            }
+          }
+
+          // Find leftmost/rightmost populated columns
+          let xMin = -1, xMax = -1;
+          for (let x = 0; x < sampleW; x++) {
+            if (top[x] !== -1) { if (xMin === -1) xMin = x; xMax = x; }
+          }
+          if (xMin === -1 || xMax - xMin < 10) return false;
+
+          // Small inset for a tighter visual fit
+          const INSET = 1;
+          const mapX = sx => offsetX + (sx / sampleW) * dispW;
+          const mapY = sy => offsetY + (sy / sampleH) * dispH;
+
+          const pts = [];
+          // Top edge left->right
+          for (let x = xMin; x <= xMax; x++) {
+            if (top[x] !== -1) pts.push({ x: mapX(x), y: mapY(top[x] - INSET) });
+          }
+          // Bottom edge right->left
+          for (let x = xMax; x >= xMin; x--) {
+            if (bot[x] !== -1) pts.push({ x: mapX(x), y: mapY(bot[x] + INSET) });
+          }
+
+          // Smooth a bit to reduce tiny zigzags between letters
+          const smoothed = [];
+          const WIN = 2;
+          for (let i = 0; i < pts.length; i++) {
+            let sx = 0, sy = 0, c = 0;
+            for (let k = -WIN; k <= WIN; k++) {
+              const p = pts[(i + k + pts.length) % pts.length];
+              sx += p.x; sy += p.y; c++;
+            }
+            smoothed.push({ x: sx / c, y: sy / c });
+          }
+
+          contourPts = smoothed;
+          finalizeContour();
+          return true;
+        } catch (e) { return false; }
+      }
+
+      function buildFallbackContour() {
+        // Rounded rectangle around logo element
+        let rect;
+        if (logo && logo.getBoundingClientRect) {
+          rect = logo.getBoundingClientRect();
+        }
+        const rw = rect && rect.width > 10 ? rect.width * 0.85 : Math.min(380, W * 0.5);
+        const rh = rect && rect.height > 10 ? rect.height * 0.7 : Math.min(180, H * 0.25);
+        const cx = rect ? rect.left + rect.width / 2 : W / 2;
+        const cy = rect ? rect.top + rect.height / 2 : H / 2;
+        const r = Math.min(rw, rh) * 0.18;
+        const pts = [];
+        const STEPS = 120;
+        // Parametric rounded rect
+        for (let i = 0; i < STEPS; i++) {
+          const t = i / STEPS;
+          // 4 straight edges + 4 corner arcs — approximate by sampling unit rect then rounding corners
+          const a = t * Math.PI * 2 - Math.PI / 2;
+          let px = Math.cos(a), py = Math.sin(a);
+          // Map unit circle point to rounded-rect: clamp to rect with corner smoothing
+          const halfW = rw / 2 - r;
+          const halfH = rh / 2 - r;
+          // Project radially onto rounded rect
+          // Use formula: find scale so that point lies on edge
+          const absX = Math.abs(px), absY = Math.abs(py);
+          const scale = 1 / Math.max(
+            (absX - 0) / ((halfW + r * absX / Math.sqrt(absX*absX + absY*absY)) / (halfW + r) || 1),
+            (absY - 0) / ((halfH + r * absY / Math.sqrt(absX*absX + absY*absY)) / (halfH + r) || 1),
+            0.0001
+          );
+          // Simpler: use max-norm rect + corner round
+          const mx = px * (halfW + r);
+          const my = py * (halfH + r);
+          pts.push({ x: cx + mx, y: cy + my });
+        }
+        contourPts = pts;
+        finalizeContour();
+      }
+
+      function getContourPoint(t) {
+        if (!contourPts.length) return { x: W / 2, y: H / 2 };
+        const target = (t % 1) * contourLen;
+        // binary search
+        let lo = 0, hi = contourCumLen.length - 1;
+        while (lo < hi - 1) {
+          const mid = (lo + hi) >> 1;
+          if (contourCumLen[mid] <= target) lo = mid; else hi = mid;
+        }
+        const segLen = contourCumLen[hi] - contourCumLen[lo] || 1;
+        const f = (target - contourCumLen[lo]) / segLen;
+        const p1 = contourPts[lo % contourPts.length];
+        const p2 = contourPts[hi % contourPts.length];
+        return { x: p1.x + (p2.x - p1.x) * f, y: p1.y + (p2.y - p1.y) * f };
+      }
+
+      // Try to build contour. If logo not ready yet, wait for it.
+      if (!buildLogoContour()) {
+        if (logo && !logo.complete) {
+          logo.addEventListener('load', () => {
+            if (!buildLogoContour()) buildFallbackContour();
+          }, { once: true });
+          buildFallbackContour(); // temp until load
+        } else {
+          buildFallbackContour();
+        }
       }
 
       if (canvas) {
@@ -127,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Draw laser head glow
           if (laserProgress >= 0 && laserProgress <= 1) {
-            const head = getEllipsePoint(laserProgress);
+            const head = getContourPoint(laserProgress);
             ctx.save();
             ctx.beginPath();
             ctx.arc(head.x, head.y, 4, 0, Math.PI * 2);
@@ -319,19 +479,19 @@ document.addEventListener('DOMContentLoaded', () => {
           const steps = 3;
           for (let i = 0; i < steps; i++) {
             const interpT = lastTraceT + (traceObj.t - lastTraceT) * (i / steps);
-            laserTrail.push(getEllipsePoint(interpT));
+            laserTrail.push(getContourPoint(interpT));
           }
-          laserTrail.push(getEllipsePoint(traceObj.t));
+          laserTrail.push(getContourPoint(traceObj.t));
 
           // Emit sparks + coolant at head
-          const head = getEllipsePoint(traceObj.t);
+          const head = getContourPoint(traceObj.t);
           emitSparks(head.x, head.y);
           emitCoolant(head.x, head.y);
           lastTraceT = traceObj.t;
         },
         onComplete: () => {
           // Close the loop
-          laserTrail.push(getEllipsePoint(0));
+          laserTrail.push(getContourPoint(0));
           laserProgress = -1; // hide head
         }
       });
@@ -825,31 +985,176 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- PRODUCT ACCORDION TOGGLE ---
+  function openCategory(category) {
+    if (!category) return;
+    const body = category.querySelector('.product-category__body');
+    const header = category.querySelector('.product-category__header');
+    // Close others
+    document.querySelectorAll('.product-category.active').forEach(other => {
+      if (other !== category) {
+        other.classList.remove('active');
+        other.querySelector('.product-category__header').setAttribute('aria-expanded', 'false');
+        other.querySelector('.product-category__body').style.maxHeight = '0';
+      }
+    });
+    category.classList.add('active');
+    header.setAttribute('aria-expanded', 'true');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+
   document.querySelectorAll('.product-category__header').forEach(header => {
     header.addEventListener('click', () => {
       const category = header.closest('.product-category');
       const body = category.querySelector('.product-category__body');
       const isActive = category.classList.contains('active');
 
-      // Close all others
-      document.querySelectorAll('.product-category.active').forEach(other => {
-        if (other !== category) {
-          other.classList.remove('active');
-          other.querySelector('.product-category__header').setAttribute('aria-expanded', 'false');
-          other.querySelector('.product-category__body').style.maxHeight = '0';
-        }
-      });
-
-      // Toggle current
       if (isActive) {
         category.classList.remove('active');
         header.setAttribute('aria-expanded', 'false');
         body.style.maxHeight = '0';
       } else {
-        category.classList.add('active');
-        header.setAttribute('aria-expanded', 'true');
-        body.style.maxHeight = body.scrollHeight + 'px';
+        openCategory(category);
       }
     });
   });
+
+  // Auto-open product accordion from hash (e.g. products.html#cat-lathes)
+  function handleHashOpen() {
+    if (!location.hash) return;
+    const el = document.querySelector(location.hash);
+    if (el && el.classList.contains('product-category')) {
+      openCategory(el);
+      setTimeout(() => {
+        const y = el.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 120);
+    }
+  }
+  // Delay so preloader finishes first
+  setTimeout(handleHashOpen, 600);
+  window.addEventListener('hashchange', handleHashOpen);
+
+  // --- SITE SEARCH ---
+  const SEARCH_INDEX = [
+    // Products — category pages auto-open
+    { title: 'Lathes', keywords: 'lathe lathes cnc precision turning takamaz trak lagun sharp', page: 'products.html', hash: '#cat-lathes', section: 'Products' },
+    { title: 'Milling Machines', keywords: 'mill milling mills knee bed vertical prototrak trak sharp lagun', page: 'products.html', hash: '#cat-milling', section: 'Products' },
+    { title: 'Grinders', keywords: 'grinder grinding surface cylindrical chevalier supertec', page: 'products.html', hash: '#cat-grinders', section: 'Products' },
+    { title: 'EDM Machines', keywords: 'edm electrical discharge wire sinker sodick mitsui hanwha', page: 'products.html', hash: '#cat-edm', section: 'Products' },
+    { title: '3D Metal Printer', keywords: '3d metal printing additive printer', page: 'products.html', hash: '#cat-3d-printer', section: 'Products' },
+    { title: 'Tools & Tooling', keywords: 'tools tooling cutters drills inserts', page: 'products.html', hash: '#cat-tools', section: 'Products' },
+    { title: 'Drilling Machines', keywords: 'drill drilling radial gang', page: 'products.html', hash: '#cat-drilling', section: 'Products' },
+    { title: 'Heat Treat Furnaces', keywords: 'furnace heat treat treating oven cress annealing', page: 'products.html', hash: '#cat-furnaces', section: 'Products' },
+    { title: 'Saws', keywords: 'saw saws band bandsaw cutoff', page: 'products.html', hash: '#cat-saws', section: 'Products' },
+    { title: 'Welders', keywords: 'welder welding laser welding laserstar repair mold die', page: 'products.html', hash: '#cat-welders', section: 'Products' },
+    { title: 'Laser, Plasma & Router Systems', keywords: 'laser plasma router cnc cutting', page: 'products.html', hash: '#cat-laser-plasma', section: 'Products' },
+    { title: 'Storage Solutions', keywords: 'storage tool crib shelving cabinets', page: 'products.html', hash: '#cat-storage', section: 'Products' },
+    { title: 'CAD/CAM Software', keywords: 'software cad cam programming', page: 'products.html', hash: '#cat-software', section: 'Products' },
+    { title: 'Rotary Transfers', keywords: 'rotary transfer multi-spindle', page: 'products.html', hash: '#cat-rotary', section: 'Products' },
+    { title: 'Multi-Axes Machines', keywords: 'multi axes 5-axis 6-axis machining', page: 'products.html', hash: '#cat-multi-axes', section: 'Products' },
+    { title: 'Water Jets', keywords: 'waterjet water jet cutting omax', page: 'products.html', hash: '#cat-waterjet', section: 'Products' },
+    { title: 'Quality Control Equipment', keywords: 'quality control cmm inspection metrology measuring', page: 'products.html', hash: '#cat-quality', section: 'Products' },
+    { title: 'Bar Chargers & Accessories', keywords: 'bar chargers feeder accessories edge', page: 'products.html', hash: '#cat-bar-chargers', section: 'Products' },
+    { title: 'Circuit Board Repair', keywords: 'repair replacement circuit electronic boards pcb', page: 'products.html', hash: '#cat-repair', section: 'Products' },
+    // Services
+    { title: 'CNC Machine Sales', keywords: 'sales buy purchase new used pre-owned financing', page: 'services.html', hash: '', section: 'Services' },
+    { title: 'Installation & Setup', keywords: 'install installation setup delivery rigging calibration leveling', page: 'services.html', hash: '', section: 'Services' },
+    { title: 'Preventive Maintenance & Repair', keywords: 'maintenance repair preventive service breakdown calibration alignment', page: 'services.html', hash: '', section: 'Services' },
+    { title: 'Parts & Accessories', keywords: 'parts accessories oem wire filters consumables tooling', page: 'services.html', hash: '', section: 'Services' },
+    { title: 'Training & Technical Support', keywords: 'training programming support operator technical', page: 'services.html', hash: '', section: 'Services' },
+    { title: 'Financing Options', keywords: 'financing leasing payment plans credit', page: 'services.html', hash: '', section: 'Services' },
+    // About
+    { title: 'About Our Company', keywords: 'about history story 2000 established 25 years experience', page: 'about.html', hash: '', section: 'About' },
+    { title: 'Coverage Area', keywords: 'coverage area map el paso juarez new mexico border tijuana brownsville albuquerque', page: 'about.html', hash: '', section: 'About' },
+    { title: 'Why Choose Us', keywords: 'why choose authorized dealer bilingual spanish english rapid response', page: 'about.html', hash: '', section: 'About' },
+    // Contact
+    { title: 'Contact Us', keywords: 'contact phone email address form quote message', page: 'contact.html', hash: '', section: 'Contact' },
+    { title: 'Get a Quote', keywords: 'quote pricing estimate inquiry', page: 'contact.html', hash: '', section: 'Contact' },
+    // Industries
+    { title: 'Automotive Industry', keywords: 'automotive engines transmissions chassis', page: 'index.html', hash: '', section: 'Home' },
+    { title: 'Aerospace Industry', keywords: 'aerospace airframe turbine aviation', page: 'index.html', hash: '', section: 'Home' },
+    { title: 'Medical Industry', keywords: 'medical surgical implants devices', page: 'index.html', hash: '', section: 'Home' },
+    { title: 'Mold & Die', keywords: 'mold die tooling dies edm', page: 'index.html', hash: '', section: 'Home' },
+  ];
+
+  function searchQuery(q) {
+    q = q.trim().toLowerCase();
+    if (!q) return [];
+    const terms = q.split(/\s+/).filter(Boolean);
+    const scored = SEARCH_INDEX.map(item => {
+      const hay = (item.title + ' ' + item.keywords + ' ' + item.section).toLowerCase();
+      let score = 0;
+      for (const t of terms) {
+        if (hay.includes(t)) score += 2;
+        if (item.title.toLowerCase().includes(t)) score += 3;
+      }
+      return { item, score };
+    }).filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
+    return scored.map(x => x.item);
+  }
+
+  function renderResults(results, container) {
+    if (!results.length) {
+      container.innerHTML = '<div class="search-results__empty">No matches found</div>';
+      container.classList.add('open');
+      return;
+    }
+    container.innerHTML = results.map(r =>
+      `<a class="search-result" href="${r.page}${r.hash}"><span class="search-result__title">${r.title}</span><span class="search-result__section">${r.section}</span></a>`
+    ).join('');
+    container.classList.add('open');
+  }
+
+  function initSearch(root) {
+    const input = root.querySelector('.site-search__input');
+    const toggleBtn = root.querySelector('.site-search__toggle');
+    const results = root.querySelector('.site-search__results');
+    const clearBtn = root.querySelector('.site-search__clear');
+    if (!input || !results) return;
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        root.classList.toggle('open');
+        if (root.classList.contains('open')) {
+          setTimeout(() => input.focus(), 50);
+        }
+      });
+    }
+
+    input.addEventListener('input', () => {
+      const q = input.value;
+      if (clearBtn) clearBtn.style.display = q ? 'flex' : 'none';
+      if (!q.trim()) { results.classList.remove('open'); results.innerHTML = ''; return; }
+      renderResults(searchQuery(q), results);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { root.classList.remove('open'); input.value=''; results.innerHTML=''; results.classList.remove('open'); }
+      if (e.key === 'Enter') {
+        const first = results.querySelector('.search-result');
+        if (first) window.location.href = first.getAttribute('href');
+      }
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
+        input.focus();
+        results.classList.remove('open');
+        results.innerHTML = '';
+        clearBtn.style.display = 'none';
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target)) {
+        results.classList.remove('open');
+        root.classList.remove('open');
+      }
+    });
+  }
+
+  document.querySelectorAll('.site-search').forEach(initSearch);
 });

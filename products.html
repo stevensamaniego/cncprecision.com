@@ -39,6 +39,21 @@
           <a href="contact.html" class="btn btn--primary">Get a Quote</a>
         </span>
       </nav>
+      <div class="site-search">
+        <button class="site-search__toggle" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <div class="site-search__panel">
+          <div class="site-search__field">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" class="site-search__input" placeholder="Search products, services…" aria-label="Search site">
+            <button class="site-search__clear" aria-label="Clear search">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="site-search__results"></div>
+        </div>
+      </div>
       <button class="header__toggle" aria-label="Toggle navigation">
         <span></span>
         <span></span>
@@ -82,7 +97,7 @@
       <div class="product-accordion">
 
         <!-- LATHES -->
-        <div class="product-category">
+        <div class="product-category" id="cat-lathes">
           <button class="product-category__header" aria-expanded="false">
             <h3>Lathes</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -114,7 +129,7 @@
         </div>
 
         <!-- MILLING MACHINES -->
-        <div class="product-category">
+        <div class="product-category" id="cat-milling">
           <button class="product-category__header" aria-expanded="false">
             <h3>Milling Machines</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -138,7 +153,7 @@
         </div>
 
         <!-- GRINDERS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-grinders">
           <button class="product-category__header" aria-expanded="false">
             <h3>Grinders</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -166,7 +181,7 @@
         </div>
 
         <!-- EDM MACHINES -->
-        <div class="product-category">
+        <div class="product-category" id="cat-edm">
           <button class="product-category__header" aria-expanded="false">
             <h3>EDM Machines</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -194,7 +209,7 @@
         </div>
 
         <!-- 3D METAL PRINTER -->
-        <div class="product-category">
+        <div class="product-category" id="cat-3d-printer">
           <button class="product-category__header" aria-expanded="false">
             <h3>3D Metal Printer</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -210,7 +225,7 @@
         </div>
 
         <!-- TOOLS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-tools">
           <button class="product-category__header" aria-expanded="false">
             <h3>Tools</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -246,7 +261,7 @@
         </div>
 
         <!-- DRILLING -->
-        <div class="product-category">
+        <div class="product-category" id="cat-drilling">
           <button class="product-category__header" aria-expanded="false">
             <h3>Drilling</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -266,7 +281,7 @@
         </div>
 
         <!-- HEAT TREAT FURNACES -->
-        <div class="product-category">
+        <div class="product-category" id="cat-furnaces">
           <button class="product-category__header" aria-expanded="false">
             <h3>Heat Treat Furnaces</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -286,7 +301,7 @@
         </div>
 
         <!-- SAWS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-saws">
           <button class="product-category__header" aria-expanded="false">
             <h3>Saws</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -306,7 +321,7 @@
         </div>
 
         <!-- WELDERS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-welders">
           <button class="product-category__header" aria-expanded="false">
             <h3>Welders</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -326,7 +341,7 @@
         </div>
 
         <!-- LASER, PLASMA & ROUTERS SYSTEMS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-laser-plasma">
           <button class="product-category__header" aria-expanded="false">
             <h3>Laser, Plasma &amp; Router Systems</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -350,7 +365,7 @@
         </div>
 
         <!-- STORAGE -->
-        <div class="product-category">
+        <div class="product-category" id="cat-storage">
           <button class="product-category__header" aria-expanded="false">
             <h3>Storage</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -370,7 +385,7 @@
         </div>
 
         <!-- SOFTWARE -->
-        <div class="product-category">
+        <div class="product-category" id="cat-software">
           <button class="product-category__header" aria-expanded="false">
             <h3>Software</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -394,7 +409,7 @@
         </div>
 
         <!-- ROTARY TRANSFERS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-rotary">
           <button class="product-category__header" aria-expanded="false">
             <h3>Rotary Transfers</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -410,7 +425,7 @@
         </div>
 
         <!-- MULTI-AXES -->
-        <div class="product-category">
+        <div class="product-category" id="cat-multi-axes">
           <button class="product-category__header" aria-expanded="false">
             <h3>Multi-Axes</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -430,7 +445,7 @@
         </div>
 
         <!-- WATER JETS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-waterjet">
           <button class="product-category__header" aria-expanded="false">
             <h3>Water Jets</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -446,7 +461,7 @@
         </div>
 
         <!-- QUALITY CONTROL -->
-        <div class="product-category">
+        <div class="product-category" id="cat-quality">
           <button class="product-category__header" aria-expanded="false">
             <h3>Quality Control</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -466,7 +481,7 @@
         </div>
 
         <!-- BAR CHARGERS AND ACCESSORIES -->
-        <div class="product-category">
+        <div class="product-category" id="cat-bar-chargers">
           <button class="product-category__header" aria-expanded="false">
             <h3>Bar Chargers &amp; Accessories</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -490,7 +505,7 @@
         </div>
 
         <!-- REPAIR / REPLACEMENT OF CIRCUIT ELECTRONIC BOARDS -->
-        <div class="product-category">
+        <div class="product-category" id="cat-repair">
           <button class="product-category__header" aria-expanded="false">
             <h3>Repair / Replacement of Circuit Electronic Boards</h3>
             <svg class="product-category__chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -562,6 +577,11 @@
         <div class="footer__brand">
           <img src="assets/logos/CNC-3D-LOGO-NEW.png" alt="CNC Precision Machines International">
           <p>Full-service distributor of new industrial machine tools serving El Paso, TX, New Mexico, and Northern Mexico since 2000.</p>
+          <div class="footer__social">
+            <a href="https://www.instagram.com/cncprecisionmachines" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+            </a>
+          </div>
         </div>
         <div class="footer__links">
           <h4>Company</h4>
